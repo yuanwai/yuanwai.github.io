@@ -1,4 +1,77 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Java8极简手册-01 · 员外在减肥</title><meta name="description" content="Java8极简手册-01 - Xiangdong Lu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/prontera.css"><link rel="search" type="application/opensearchdescription+xml" href="http://luxiangdong.com/atom.xml" title="员外在减肥"></head><body><header class="feature-header"><nav class="component-nav"><ul><div class="logo-container"><a href="/"><h2 class="title">员外在减肥</h2></a></div><a href="/" target="_self" class="li component-nav-item"><p>INDEX</p></a><a href="/archives" target="_self" class="li component-nav-item"><p>ARCHIVES</p></a><ul class="shortcut-icons"><a href="https://github.com/yuanwai" target="_blank"><img src="/images/github.svg" class="icon"></a></ul></ul></nav></header><main class="container"><div id="post-container"><div class="post"><article class="post-block"><h1 class="post-title">Java8极简手册-01</h1><div class="post-info">2018年5月4日</div><div class="post-content"><blockquote>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Java8极简手册-01 | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="为忙碌的程序员归纳总结和翻译的Java8极简教程，有助于快速了解Java8的新特性。  接口的默认方法（Default Methods for Interfaces）Java 8允许我们利用default关键字在接口中定义非抽象的方法实现，这个功能也被称为虚拟扩展方法( virtual extension methods)。 以下是第一个例子： 1234567interface Formula">
+<meta name="keywords" content="java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java8极简手册-01">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/04/java8guide01/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="为忙碌的程序员归纳总结和翻译的Java8极简教程，有助于快速了解Java8的新特性。  接口的默认方法（Default Methods for Interfaces）Java 8允许我们利用default关键字在接口中定义非抽象的方法实现，这个功能也被称为虚拟扩展方法( virtual extension methods)。 以下是第一个例子： 1234567interface Formula">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-08T06:00:22.805Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java8极简手册-01">
+<meta name="twitter:description" content="为忙碌的程序员归纳总结和翻译的Java8极简教程，有助于快速了解Java8的新特性。  接口的默认方法（Default Methods for Interfaces）Java 8允许我们利用default关键字在接口中定义非抽象的方法实现，这个功能也被称为虚拟扩展方法( virtual extension methods)。 以下是第一个例子： 1234567interface Formula">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-java8guide01" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Java8极简手册-01
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <blockquote>
 <p>为忙碌的程序员归纳总结和翻译的Java8极简教程，有助于快速了解Java8的新特性。</p>
 </blockquote>
 <h2 id="接口的默认方法（Default-Methods-for-Interfaces）"><a href="#接口的默认方法（Default-Methods-for-Interfaces）" class="headerlink" title="接口的默认方法（Default Methods for Interfaces）"></a>接口的默认方法（Default Methods for Interfaces）</h2><p>Java 8允许我们利用<code>default</code>关键字在接口中定义非抽象的方法实现，这个功能也被称为虚拟扩展方法( <a href="http://stackoverflow.com/a/24102730" target="_blank" rel="noopener">virtual extension methods</a>)。</p>
@@ -38,12 +111,102 @@
 <p>我们不是手动实现工厂，而是通过构造函数引用将所有东西粘合在一起：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PersonFactory&lt;Person&gt; personFactory = Person::<span class="keyword">new</span>;</span><br><span class="line">Person person = personFactory.create(<span class="string">"Peter"</span>, <span class="string">"Parker"</span>);</span><br></pre></td></tr></table></figure>
 <p>我们通过<code>Person :: new</code>创建一个对Person构造函数的引用。 Java编译器通过匹配<code>PersonFactory.create</code>的参数和类型自动选择正确的构造函数。</p>
-</div></article></div><div id="disqus_thread"></div></div><script>var disqus_shortname = 'angrypowman';
-var disqus_identifier = '2018/05/04/java8guide01/';
-var disqus_title = 'Java8极简手册-01';
-var disqus_url = 'http://luxiangdong.com/2018/05/04/java8guide01/';
-(function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//angrypowman.disqus.com/count.js" async></script></main><footer class="footer-container"><div class="paginator"><a href="/2018/05/07/test/" class="prev">PREV</a><a href="/2018/05/03/Cassandra-CN-01/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://luxiangdong.com">Xiangdong Lu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/AngryPowman/hexo-theme-prontera" target="_blank">hexo-theme-prontera</a>.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"angrypowman",'auto');ga('send','pageview');</script></body></html>
+
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/04/java8guide01/" class="article-date">
+  <time datetime="2018-05-03T16:09:48.000Z" itemprop="datePublished">2018-05-04</time>
+</a>
+
+        </li>
+        
+          <li>
+            <span class="label">Category:</span>
+            
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+
+          </li>
+        
+        
+          <li>
+            <span class="label">Tag:</span>
+            
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+
+
+          </li>
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <span id="article-nav-newer" class="article-nav-link-wrap newer"></span>
+  
+  
+    <a href="/2018/05/03/Cassandra-CN-01/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Apache Cassandra手册中文版01</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>

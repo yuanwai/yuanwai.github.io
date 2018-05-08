@@ -1,4 +1,81 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Apache Cassandra手册中文版01 · 员外在减肥</title><meta name="description" content="Apache Cassandra手册中文版01 - Xiangdong Lu"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/prontera.css"><link rel="search" type="application/opensearchdescription+xml" href="http://luxiangdong.com/atom.xml" title="员外在减肥"></head><body><header class="feature-header"><nav class="component-nav"><ul><div class="logo-container"><a href="/"><h2 class="title">员外在减肥</h2></a></div><a href="/" target="_self" class="li component-nav-item"><p>INDEX</p></a><a href="/archives" target="_self" class="li component-nav-item"><p>ARCHIVES</p></a><ul class="shortcut-icons"><a href="https://github.com/yuanwai" target="_blank"><img src="/images/github.svg" class="icon"></a></ul></ul></nav></header><main class="container"><div id="post-container"><div class="post"><article class="post-block"><h1 class="post-title">Apache Cassandra手册中文版01</h1><div class="post-info">2018年5月3日</div><div class="post-content"><h2 id="关于本文档"><a href="#关于本文档" class="headerlink" title="关于本文档"></a>关于本文档</h2><p>欢迎来到DataStax提供的Cassandra文档。 为确保您在使用本文档时获得最佳体验，请花点时间查看使用DataStax文档的提示。</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Apache Cassandra手册中文版01 | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="关于本文档欢迎来到DataStax提供的Cassandra文档。 为确保您在使用本文档时获得最佳体验，请花点时间查看使用DataStax文档的提示。 着陆页提供有关受支持平台，产品兼容性，规划和测试集群部署，推荐的生产设置，故障排除，第三方软件，更多信息的资源，管理员和开发人员主题以及早期文档的信息。 Apache Cassandra概览Apache Cassandra™ 是一个大规模可扩展的开源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Apache Cassandra手册中文版01">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/03/Cassandra-CN-01/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="关于本文档欢迎来到DataStax提供的Cassandra文档。 为确保您在使用本文档时获得最佳体验，请花点时间查看使用DataStax文档的提示。 着陆页提供有关受支持平台，产品兼容性，规划和测试集群部署，推荐的生产设置，故障排除，第三方软件，更多信息的资源，管理员和开发人员主题以及早期文档的信息。 Apache Cassandra概览Apache Cassandra™ 是一个大规模可扩展的开源">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/intro_cassandra.png">
+<meta property="og:image" content="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/arc_hashValueRange.png">
+<meta property="og:image" content="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/arc_vnodes_compare.png">
+<meta property="og:image" content="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/arc_rack_inferring_snitch_ips.png">
+<meta property="og:updated_time" content="2018-05-03T09:49:44.082Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Apache Cassandra手册中文版01">
+<meta name="twitter:description" content="关于本文档欢迎来到DataStax提供的Cassandra文档。 为确保您在使用本文档时获得最佳体验，请花点时间查看使用DataStax文档的提示。 着陆页提供有关受支持平台，产品兼容性，规划和测试集群部署，推荐的生产设置，故障排除，第三方软件，更多信息的资源，管理员和开发人员主题以及早期文档的信息。 Apache Cassandra概览Apache Cassandra™ 是一个大规模可扩展的开源">
+<meta name="twitter:image" content="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/intro_cassandra.png">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-Cassandra-CN-01" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Apache Cassandra手册中文版01
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <h2 id="关于本文档"><a href="#关于本文档" class="headerlink" title="关于本文档"></a>关于本文档</h2><p>欢迎来到DataStax提供的Cassandra文档。 为确保您在使用本文档时获得最佳体验，请花点时间查看使用DataStax文档的提示。</p>
 <p>着陆页提供有关受支持平台，产品兼容性，规划和测试集群部署，推荐的生产设置，故障排除，第三方软件，更多信息的资源，管理员和开发人员主题以及早期文档的信息。</p>
 <h2 id="Apache-Cassandra概览"><a href="#Apache-Cassandra概览" class="headerlink" title="Apache Cassandra概览"></a>Apache Cassandra概览</h2><p>Apache Cassandra™ 是一个大规模可扩展的开源NoSQL数据库。 Cassandra非常适合跨多个数据中心和云，来管理大量结构化、半结构化和非结构化数据。 Cassandra在许多商用服务器上提供持续可用性、线性可扩展性和操作简单性，而没有单点故障，以及强大的动态数据模型，旨在实现最大的灵活性和快速的响应时间。</p>
 <h2 id="Cassandra如何工作"><a href="#Cassandra如何工作" class="headerlink" title="Cassandra如何工作?"></a>Cassandra如何工作?</h2><p>Cassandra基于可扩展的架构，意味着它能够每秒处理PB级信息和数千个并发用户/操作。</p>
@@ -340,12 +417,91 @@
 <p><img src="http://docs.datastax.com/en/cassandra/3.0/cassandra/images/arc_rack_inferring_snitch_ips.png" alt="img"></p>
 <h3 id="PropertyFileSnitch"><a href="#PropertyFileSnitch" class="headerlink" title="PropertyFileSnitch"></a>PropertyFileSnitch</h3><p>这个snitch决定了由机架和数据中心决定的距离。它使用位于cassandra拓扑中的网络详细信息。属性文件。当使用这个snitch时，您可以定义您的数据中心名称来做任何您想要的。确保数据中心名称与keyspace定义中数据中心的名称相关。集群中的每个节点都应该在cassandra拓扑中描述。属性文件，这个文件在集群中的每个节点上都应该是完全相同的。</p>
 <h3 id="Procedure"><a href="#Procedure" class="headerlink" title="Procedure"></a>Procedure</h3><p>如果您有不一致的IPs和两个物理数据中心，每一个都有两个机架，还有一个用于复制分析数据的第三个逻辑数据中心，即cassandra拓扑。属性文件可能是这样的:注意:数据中心和机架名称区分大小写。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># datacenter One</span><br><span class="line"></span><br><span class="line">175.56.12.105=DC1:RAC1</span><br><span class="line">175.50.13.200=DC1:RAC1</span><br><span class="line">175.54.35.197=DC1:RAC1</span><br><span class="line"></span><br><span class="line">120.53.24.101=DC1:RAC2</span><br><span class="line">120.55.16.200=DC1:RAC2</span><br><span class="line">120.57.102.103=DC1:RAC2</span><br><span class="line"></span><br><span class="line"># datacenter Two</span><br><span class="line"></span><br><span class="line">110.56.12.120=DC2:RAC1</span><br><span class="line">110.50.13.201=DC2:RAC1</span><br><span class="line">110.54.35.184=DC2:RAC1</span><br><span class="line"></span><br><span class="line">50.33.23.120=DC2:RAC2</span><br><span class="line">50.45.14.220=DC2:RAC2</span><br><span class="line">50.17.10.203=DC2:RAC2</span><br><span class="line"></span><br><span class="line"># Analytics Replication Group</span><br><span class="line"></span><br><span class="line">172.106.12.120=DC3:RAC1</span><br><span class="line">172.106.12.121=DC3:RAC1</span><br><span class="line">172.106.12.122=DC3:RAC1</span><br><span class="line"></span><br><span class="line"># default for unknown nodes </span><br><span class="line">default =DC3:RAC1</span><br></pre></td></tr></table></figure></div></article></div><div id="disqus_thread"></div></div><script>var disqus_shortname = 'angrypowman';
-var disqus_identifier = '2018/05/03/Cassandra-CN-01/';
-var disqus_title = 'Apache Cassandra手册中文版01';
-var disqus_url = 'http://luxiangdong.com/2018/05/03/Cassandra-CN-01/';
-(function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//angrypowman.disqus.com/count.js" async></script></main><footer class="footer-container"><div class="paginator"><a href="/2018/05/04/java8guide01/" class="prev">PREV</a><a href="/2018/05/03/google-api/" class="next">NEXT</a></div><div class="copyright"><p>© 2017 - 2018 <a href="http://luxiangdong.com">Xiangdong Lu</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/AngryPowman/hexo-theme-prontera" target="_blank">hexo-theme-prontera</a>.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"angrypowman",'auto');ga('send','pageview');</script></body></html>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># datacenter One</span><br><span class="line"></span><br><span class="line">175.56.12.105=DC1:RAC1</span><br><span class="line">175.50.13.200=DC1:RAC1</span><br><span class="line">175.54.35.197=DC1:RAC1</span><br><span class="line"></span><br><span class="line">120.53.24.101=DC1:RAC2</span><br><span class="line">120.55.16.200=DC1:RAC2</span><br><span class="line">120.57.102.103=DC1:RAC2</span><br><span class="line"></span><br><span class="line"># datacenter Two</span><br><span class="line"></span><br><span class="line">110.56.12.120=DC2:RAC1</span><br><span class="line">110.50.13.201=DC2:RAC1</span><br><span class="line">110.54.35.184=DC2:RAC1</span><br><span class="line"></span><br><span class="line">50.33.23.120=DC2:RAC2</span><br><span class="line">50.45.14.220=DC2:RAC2</span><br><span class="line">50.17.10.203=DC2:RAC2</span><br><span class="line"></span><br><span class="line"># Analytics Replication Group</span><br><span class="line"></span><br><span class="line">172.106.12.120=DC3:RAC1</span><br><span class="line">172.106.12.121=DC3:RAC1</span><br><span class="line">172.106.12.122=DC3:RAC1</span><br><span class="line"></span><br><span class="line"># default for unknown nodes </span><br><span class="line">default =DC3:RAC1</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/03/Cassandra-CN-01/" class="article-date">
+  <time datetime="2018-05-03T09:44:56.000Z" itemprop="datePublished">2018-05-03</time>
+</a>
+
+        </li>
+        
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <a href="/2018/05/04/java8guide01/" id="article-nav-newer" class="article-nav-link-wrap newer">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Java8极简手册-01
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/03/google-api/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Google API 权威指南</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>
