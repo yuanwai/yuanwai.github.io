@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Effective Java 中文版(item:36-37) | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="36. 使用EnumSet替代位属性如果枚举类型的元素主要用于集合中，一般来说使用int枚举模式（条目 34），下面将2的不同倍数赋值给每个常量： 12345678910// Bit field enumeration constants - OBSOLETE!public class Text &amp;#123;    public static final int STYLE_BOLD">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java 中文版(item:36-37)">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/09/effective-java-cn-36-37/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="36. 使用EnumSet替代位属性如果枚举类型的元素主要用于集合中，一般来说使用int枚举模式（条目 34），下面将2的不同倍数赋值给每个常量： 12345678910// Bit field enumeration constants - OBSOLETE!public class Text &amp;#123;    public static final int STYLE_BOLD">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-09T03:10:20.544Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java 中文版(item:36-37)">
+<meta name="twitter:description" content="36. 使用EnumSet替代位属性如果枚举类型的元素主要用于集合中，一般来说使用int枚举模式（条目 34），下面将2的不同倍数赋值给每个常量： 12345678910// Bit field enumeration constants - OBSOLETE!public class Text &amp;#123;    public static final int STYLE_BOLD">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-effective-java-cn-36-37" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective Java 中文版(item:36-37)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <h2 id="36-使用EnumSet替代位属性"><a href="#36-使用EnumSet替代位属性" class="headerlink" title="36. 使用EnumSet替代位属性"></a>36. 使用EnumSet替代位属性</h2><p>如果枚举类型的元素主要用于集合中，一般来说使用int枚举模式（条目 34），下面将2的不同倍数赋值给每个常量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Bit field enumeration constants - OBSOLETE!</span><br><span class="line">public class Text &#123;</span><br><span class="line">    public static final int STYLE_BOLD          = 1 &lt;&lt; 0;  // 1</span><br><span class="line">    public static final int STYLE_ITALIC        = 1 &lt;&lt; 1;  // 2</span><br><span class="line">    public static final int STYLE_UNDERLINE     = 1 &lt;&lt; 2;  // 4</span><br><span class="line">    public static final int STYLE_STRIKETHROUGH = 1 &lt;&lt; 3;  // 8</span><br><span class="line"></span><br><span class="line">    // Parameter is bitwise OR of zero or more STYLE_ constants</span><br><span class="line">    public void applyStyles(int styles) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种表示方式允许你使用按位或（or）运算将几个常量合并到一个称为位属性（bit field）的集合中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">text.applyStyles(STYLE_BOLD | STYLE_ITALIC);</span><br></pre></td></tr></table></figure>
+<p>位属性表示还允许你使用按位算术有效地执行集合运算，如并集和交集。 但是位属性具有int枚举常量等的所有缺点。 当打印为数字时，解释位属性比简单的int枚举常量更难理解。 没有简单的方法遍历所有由位属性表示的元素。 最后，必须预测在编写API时需要的最大位数，并相应地为位属性（通常为int或long）选择一种类型。 一旦你选择了一个类型，你就不能超过它的宽度（32或64位）而不改变API。</p>
+<p>一些程序员使用枚举优于int常量，当他们需要传递常量集合时仍然使用位属性。 没有理由这样做，因为存在更好的选择。 java.util包提供了<code>EnumSet</code>类来有效地表示从单个枚举类型中提取的值集合。 这个类实现了Set接口，提供了所有其他Set实现的丰富性，类型安全性和互操作性。 但是在内部，每个EnumSet都表示为一个位矢量（bit vector）。 如果底层的枚举类型有64个或更少的元素，并且大多数情况下，整个<code>EnumSet</code>用单个long表示，所以它的性能与位属性的性能相当。 批量操作（如removeAll和retainAll）是使用按位算术实现的，就像你为位属性手动操作一样。 但是完全避免了手动位混乱的丑陋和错误倾向：<code>EnumSet</code>为你做了很大的努力。</p>
+<p>下面是前一个使用枚举和枚举集合替代位属性的示例。 它更短，更清晰，更安全：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// EnumSet - a modern replacement for bit fields</span><br><span class="line">public class Text &#123;</span><br><span class="line">    public enum Style &#123; BOLD, ITALIC, UNDERLINE, STRIKETHROUGH &#125;</span><br><span class="line"></span><br><span class="line">    // Any Set could be passed in, but EnumSet is clearly best</span><br><span class="line">    public void applyStyles(Set&lt;Style&gt; styles) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里是将<code>EnumSet</code>实例传递给applyStyles方法的客户端代码。 <code>EnumSet</code>类提供了一组丰富的静态工厂，可以轻松创建集合，其中一个代码如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">text.applyStyles(EnumSet.of(Style.BOLD, Style.ITALIC));</span><br></pre></td></tr></table></figure>
+<p>请注意，<code>applyStyles</code>方法采用<code>Set&lt;Style&gt;</code>而不是<code>EnumSet&lt;Style&gt;</code>参数。 尽管所有客户端都可能会将<code>EnumSet</code>传递给该方法，但接受接口类型而不是实现类型通常是很好的做法（条目 64）。 这允许一个不寻常的客户端通过其他Set实现的可能性。</p>
+<p>总之，<strong>仅仅因为枚举类型将被用于集合中，所以没有理由用位属性来表示它</strong>。 <code>EnumSet</code>类将位属性的简洁性和性能与条目 34中所述的枚举类型的所有优点相结合。<code>EnumSet</code>的一个真正缺点是，它不像Java 9那样创建一个不可变的<code>EnumSet</code>，但是在即将发布的版本中可能会得到补救。 同时，你可以用<code>Collections.unmodifiableSet</code>封装一个<code>EnumSet</code>，但是简洁性和性能会受到影响。</p>
+<h2 id="37-使用EnumMap替代序数索引"><a href="#37-使用EnumMap替代序数索引" class="headerlink" title="37. 使用EnumMap替代序数索引"></a>37. 使用EnumMap替代序数索引</h2><p>有时可能会看到使用<code>ordinal</code>方法（条目 35）来索引到数组或列表的代码。 例如，考虑一下这个简单的类来代表一种植物：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Plant &#123;</span><br><span class="line">    enum LifeCycle &#123; ANNUAL, PERENNIAL, BIENNIAL &#125;</span><br><span class="line">    final String name;</span><br><span class="line">    final LifeCycle lifeCycle;</span><br><span class="line"></span><br><span class="line">    Plant(String name, LifeCycle lifeCycle) &#123;</span><br><span class="line">        [this.name](http://this.name) = name;</span><br><span class="line">        this.lifeCycle = lifeCycle;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override public String toString() &#123;</span><br><span class="line">        return name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在假设你有一组植物代表一个花园，想要列出这些由生命周期组织的植物(一年生，多年生，或双年生)。为此，需要构建三个集合，每个生命周期作为一个，并遍历整个花园，将每个植物放置在适当的集合中。一些程序员可以通过将这些集合放入一个由生命周期序数索引的数组中来实现这一点：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// Using ordinal() to index into an array - DON&apos;T DO THIS!</span><br><span class="line"></span><br><span class="line">Set&lt;Plant&gt;[] plantsByLifeCycle =</span><br><span class="line"></span><br><span class="line">    (Set&lt;Plant&gt;[]) new Set[Plant.LifeCycle.values().length];</span><br><span class="line"></span><br><span class="line">for (int i = 0; i &lt; plantsByLifeCycle.length; i++)</span><br><span class="line"></span><br><span class="line">    plantsByLifeCycle[i] = new HashSet&lt;&gt;();</span><br><span class="line"></span><br><span class="line">for (Plant p : garden)</span><br><span class="line"></span><br><span class="line">    plantsByLifeCycle[p.lifeCycle.ordinal()].add(p);</span><br><span class="line"></span><br><span class="line">// Print the results</span><br><span class="line"></span><br><span class="line">for (int i = 0; i &lt; plantsByLifeCycle.length; i++) &#123;</span><br><span class="line"></span><br><span class="line">    System.out.printf(&quot;%s: %s%n&quot;,</span><br><span class="line"></span><br><span class="line">        Plant.LifeCycle.values()[i], plantsByLifeCycle[i]);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方法是有效的，但充满了问题。 因为数组不兼容泛型（条目 28），程序需要一个未经检查的转换，并且不会干净地编译。 由于该数组不知道索引代表什么，因此必须手动标记索引输出。 但是这种技术最严重的问题是，当你访问一个由枚举序数索引的数组时，你有责任使用正确的int值; int不提供枚举的类型安全性。 如果你使用了错误的值，程序会默默地做错误的事情，如果你幸运的话，抛出一个<code>ArrayIndexOutOfBoundsException</code>异常。</p>
+<p>有一个更好的方法来达到同样的效果。 该数组有效地用作从枚举到值的映射，因此不妨使用Map。 更具体地说，有一个非常快速的Map实现，设计用于枚举键，称为<code>java.util.EnumMap</code>。 下面是当程序重写为使用<code>EnumMap</code>时的样子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Using an EnumMap to associate data with an enum</span><br><span class="line"></span><br><span class="line">Map&lt;Plant.LifeCycle, Set&lt;Plant&gt;&gt;  plantsByLifeCycle =</span><br><span class="line"></span><br><span class="line">    new EnumMap&lt;&gt;(Plant.LifeCycle.class);</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/09/effective-java-cn-36-37/" class="article-date">
+  <time datetime="2018-05-09T01:26:23.000Z" itemprop="datePublished">2018-05-09</time>
+</a>
+
+        </li>
+        
+          <li>
+            <span class="label">Category:</span>
+            
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+
+          </li>
+        
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <span id="article-nav-newer" class="article-nav-link-wrap newer"></span>
+  
+  
+    <a href="/2018/05/09/effective-java-cn-31-35/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Effective Java 中文版(item:31-35)</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>

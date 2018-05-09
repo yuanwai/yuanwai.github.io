@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Effective Java中文版(item:06-10) | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="6. 避免创建不必要的对象在每次需要时重用一个对象而不是创建一个新的相同功能对象通常是恰当的。重用可以更快更流行。如果对象是不可变的(条目 17)，它总是可以被重用。 作为一个不应该这样做的极端例子，请考虑以下语句： 1String s = new String(&amp;quot;bikini&amp;quot;);  // DON&amp;apos;T DO THIS! 语句每次执行时都会创建一个新的String实例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java中文版(item:06-10)">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/09/effective-java-cn-06-10/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="6. 避免创建不必要的对象在每次需要时重用一个对象而不是创建一个新的相同功能对象通常是恰当的。重用可以更快更流行。如果对象是不可变的(条目 17)，它总是可以被重用。 作为一个不应该这样做的极端例子，请考虑以下语句： 1String s = new String(&amp;quot;bikini&amp;quot;);  // DON&amp;apos;T DO THIS! 语句每次执行时都会创建一个新的String实例">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-09T01:32:47.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java中文版(item:06-10)">
+<meta name="twitter:description" content="6. 避免创建不必要的对象在每次需要时重用一个对象而不是创建一个新的相同功能对象通常是恰当的。重用可以更快更流行。如果对象是不可变的(条目 17)，它总是可以被重用。 作为一个不应该这样做的极端例子，请考虑以下语句： 1String s = new String(&amp;quot;bikini&amp;quot;);  // DON&amp;apos;T DO THIS! 语句每次执行时都会创建一个新的String实例">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-effective-java-cn-06-10" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective Java中文版(item:06-10)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <h2 id="6-避免创建不必要的对象"><a href="#6-避免创建不必要的对象" class="headerlink" title="6. 避免创建不必要的对象"></a>6. 避免创建不必要的对象</h2><p>在每次需要时重用一个对象而不是创建一个新的相同功能对象通常是恰当的。重用可以更快更流行。如果对象是不可变的(条目 17)，它总是可以被重用。</p>
+<p>作为一个不应该这样做的极端例子，请考虑以下语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = new String(&quot;bikini&quot;);  // DON&apos;T DO THIS!</span><br></pre></td></tr></table></figure>
+<p>语句每次执行时都会创建一个新的String实例，而这些对象的创建都不是必需的。String构造方法<code>(“bikini”)</code>的参数本身就是一个<code>bikini</code>实例，它与构造方法创建的所有对象的功能相同。如果这种用法发生在循环中，或者在频繁调用的方法中，就可以毫无必要地创建数百万个String实例。</p>
+<p>改进后的版本如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String s = &quot;bikini&quot;;</span><br></pre></td></tr></table></figure>
+<p>该版本使用单个String实例，而不是每次执行时创建一个新实例。此外，它可以保证对象运行在同一虚拟机上的任何其他代码重用，而这些代码恰好包含相同的字符串字面量[JLS,3.10.5]。</p>
+<p>通过使用静态工厂方法(static factory methods(项目1)，可以避免创建不需要的对象。例如，工厂方法<code>Boolean.valueOf(String)</code>比构造方法<code>Boolean(String</code>)更可取，后者在Java 9中被弃用。构造方法每次调用时都必须创建一个新对象，而工厂方法永远不需要这样做，在实践中也不需要。除了重用不可变对象，如果知道它们不会被修改，还可以重用可变对象。</p>
+<p>一些对象的创建比其他对象的创建要昂贵得多。 如果要重复使用这样一个“昂贵的对象”，建议将其缓存起来以便重复使用。 不幸的是，当创建这样一个对象时并不总是很直观明显的。 假设你想写一个方法来确定一个字符串是否是一个有效的罗马数字。 以下是使用正则表达式完成此操作时最简单方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Performance can be greatly improved!</span><br><span class="line">static boolean isRomanNumeral(String s) &#123;</span><br><span class="line">    return s.matches(&quot;^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)&quot;</span><br><span class="line">            + &quot;(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个实现的问题在于它依赖于<code>String.matches</code>方法。 虽然<code>String.matches</code>是检查字符串是否与正则表达式匹配的最简单方法，但它不适合在性能临界的情况下重复使用。 问题是它在内部为正则表达式创建一个<code>Pattern</code>实例，并且只使用它一次，之后它就有资格进行垃圾收集。 创建<code>Pattern</code>实例是昂贵的，因为它需要将正则表达式编译成有限状态机（finite state machine）。</p>
+<p>为了提高性能，作为类初始化的一部分，将正则表达式显式编译为一个<code>Pattern</code>实例（不可变），缓存它，并在<code>isRomanNumeral</code>方法的每个调用中重复使用相同的实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Reusing expensive object for improved performance</span><br><span class="line">public class RomanNumerals &#123;</span><br><span class="line">    private static final Pattern ROMAN = Pattern.compile(</span><br><span class="line">            &quot;^(?=.)M*(C[MD]|D?C&#123;0,3&#125;)&quot;</span><br><span class="line">            + &quot;(X[CL]|L?X&#123;0,3&#125;)(I[XV]|V?I&#123;0,3&#125;)$&quot;);</span><br><span class="line"></span><br><span class="line">    static boolean isRomanNumeral(String s) &#123;</span><br><span class="line">        return ROMAN.matcher(s).matches();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果经常调用，<code>isRomanNumera</code>l的改进版本的性能会显著提升。 在我的机器上，原始版本在输入8个字符的字符串上需要1.1微秒，而改进的版本则需要0.17微秒，速度提高了6.5倍。 性能上不仅有所改善，而且更明确清晰了。 为不可见的Pattern实例创建静态final修饰的属性，并允许给它一个名字，这个名字比正则表达式本身更具可读性。</p>
+<p>如果包含<code>isRomanNumeral</code>方法的改进版本的类被初始化，但该方法从未被调用，则<code>ROMAN</code>属性则没必要初始化。 在第一次调用<code>isRomanNumeral</code>方法时，可以通过延迟初始化（ lazily initializing）属性（条目 83）来排除初始化，但一般不建议这样做。 延迟初始化常常会导致实现复杂化，而性能没有可衡量的改进（条目 67）。</p>
+<p>当一个对象是不可变的时，很明显它可以被安全地重用，但是在其他情况下，它远没有那么明显，甚至是违反直觉的。考虑适配器（adapters）的情况[Gamma95]，也称为视图（views）。一个适配器是一个对象，它委托一个支持对象（backing object），提供一个可替代的接口。由于适配器没有超出其支持对象的状态，因此不需要为给定对象创建多个给定适配器的实例。</p>
+<p>例如，Map接口的<code>keySet方法</code>返回Map对象的Set视图，包含Map中的所有key。 天真地说，似乎每次调用keySet都必须创建一个新的Set实例，但是对给定Map对象的<code>keySet</code>的每次调用都返回相同的Set实例。 尽管返回的Set实例通常是可变的，但是所有返回的对象在功能上都是相同的：当其中一个返回的对象发生变化时，所有其他对象也都变化，因为它们全部由相同的Map实例支持。 虽然创建<code>keySet</code>视图对象的多个实例基本上是无害的，但这是没有必要的，也没有任何好处。</p>
+<p>另一种创建不必要的对象的方法是自动装箱（autoboxing），它允许程序员混用基本类型和包装的基本类型，根据需要自动装箱和拆箱。 自动装箱模糊不清，但不会消除基本类型和装箱基本类型之间的区别。 有微妙的语义区别和不那么细微的性能差异（条目 61）。 考虑下面的方法，它计算所有正整数的总和。 要做到这一点，程序必须使用<code>long</code>类型，因为<code>int</code>类型不足以保存所有正整数的总和：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// Hideously slow! Can you spot the object creation?</span><br><span class="line">private static long sum() &#123;</span><br><span class="line">    Long sum = 0L;</span><br><span class="line">    for (long i = 0; i &lt;= Integer.MAX_VALUE; i++)</span><br><span class="line">        sum += i;</span><br><span class="line">    return sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个程序的结果是正确的，但由于写错了一个字符，运行的结果要比实际慢很多。变量<code>sum</code>被声明成了<code>Long</code>而不是<code>long</code>，这意味着程序构造了大约231不必要的<code>Long</code>实例（大约每次往<code>Long</code>类型的 <code>sum</code>变量中增加一个<code>long</code>类型构造的实例），把<code>sum</code>变量的类型由<code>Long</code>改为<code>long</code>，在我的机器上运行时间从6.3秒降低到0.59秒。这个教训很明显：<strong>优先使用基本类型而不是装箱的基本类型，也要注意无意识的自动装箱</strong>。</p>
+<p>这个条目不应该被误解为暗示对象创建是昂贵的，应该避免创建对象。 相反，使用构造方法创建和回收小的对象是非常廉价，构造方法只会做很少的显示工作，，尤其是在现代JVM实现上。 创建额外的对象以增强程序的清晰度，简单性或功能性通常是件好事。</p>
+<p>相反，除非池中的对象非常重量级，否则通过维护自己的对象池来避免对象创建是一个坏主意。对象池的典型例子就是数据库连接。建立连接的成本非常高，因此重用这些对象是有意义的。但是，一般来说，维护自己的对象池会使代码混乱，增加内存占用，并损害性能。现代JVM实现具有高度优化的垃圾收集器，它们在轻量级对象上轻松胜过此类对象池。</p>
+<p>这个条目的对应点是针对条目 50的防御性复制（defensive copying）。 目前的条目说：“当你应该重用一个现有的对象时，不要创建一个新的对象”，而条目 50说：“不要重复使用现有的对象，当你应该创建一个新的对象时。”请注意，重用防御性复制所要求的对象所付出的代价，要远远大于不必要地创建重复的对象。 未能在需要的情况下防御性复制会导致潜在的错误和安全漏洞；而不必要地创建对象只会影响程序的风格和性能。</p>
+<h2 id="7-消除过期的对象引用"><a href="#7-消除过期的对象引用" class="headerlink" title="7. 消除过期的对象引用"></a>7. 消除过期的对象引用</h2><p>如果你从使用手动内存管理的语言(如C或c++)切换到像Java这样的带有垃圾收集机制的语言，那么作为程序员的工作就会变得容易多了，因为你的对象在使用完毕以后就自动回收了。当你第一次体验它的时候，它就像魔法一样。这很容易让人觉得你不需要考虑内存管理，但这并不完全正确。</p>
+<p>考虑以下简单的堆栈实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// Can you spot the &quot;memory leak&quot;?</span><br><span class="line">public class Stack &#123;</span><br><span class="line">    private Object[] elements;</span><br><span class="line">    private int size = 0;</span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 16;</span><br><span class="line"></span><br><span class="line">    public Stack() &#123;</span><br><span class="line">        elements = new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void push(Object e) &#123;</span><br><span class="line">        ensureCapacity();</span><br><span class="line">        elements[size++] = e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object pop() &#123;</span><br><span class="line">        if (size == 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        return elements[--size];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Ensure space for at least one more element, roughly</span><br><span class="line">     * doubling the capacity each time the array needs to grow.</span><br><span class="line">     */</span><br><span class="line">    private void ensureCapacity() &#123;</span><br><span class="line">        if (elements.length == size)</span><br><span class="line">            elements = Arrays.copyOf(elements, 2 * size + 1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个程序没有什么明显的错误（但是对于泛型版本，请参阅条目 29）。 你可以对它进行详尽的测试，它都会成功地通过每一项测试，但有一个潜在的问题。 笼统地说，程序有一个“内存泄漏”，由于垃圾回收器的活动的增加，或内存占用的增加，静默地表现为性能下降。 在极端的情况下，这样的内存泄漏可能会导致磁盘分页（ disk paging），甚至导致内存溢出（OutOfMemoryError）的失败，但是这样的故障相对较少。</p>
+<p>那么哪里发生了内存泄漏？ 如果一个栈增长后收缩，那么从栈弹出的对象不会被垃圾收集，即使使用栈的程序不再引用这些对象。 这是因为栈维护对这些对象的过期引用（ obsolete references）。 过期引用简单来说就是永远不会解除的引用。 在这种情况下，元素数组“活动部分（active portion）”之外的任何引用都是过期的。 活动部分是由索引下标小于size的元素组成。</p>
+<p>垃圾收集语言中的内存泄漏（更适当地称为无意的对象保留 unintentional object retentions）是隐蔽的。 如果无意中保留了对象引用，那么不仅这个对象排除在垃圾回收之外，而且该对象引用的任何对象也是如此。 即使只有少数对象引用被无意地保留下来，也可以阻止垃圾回收机制对许多对象的回收，这对性能产生很大的影响。</p>
+<p>这类问题的解决方法很简单：一旦对象引用过期，将它们设置为 null。 在我们的<code>Stack</code>类的情景下，只要从栈中弹出，元素的引用就设置为过期。 <code>pop</code>方法的修正版本如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public Object pop() &#123;</span><br><span class="line">    if (size == 0)</span><br><span class="line">        throw new EmptyStackException();</span><br><span class="line">    Object result = elements[--size];</span><br><span class="line">    elements[size] = null; // Eliminate obsolete reference</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>取消过期引用的另一个好处是，如果它们随后被错误地引用，程序立即抛出<code>NullPointerException</code>异常，而不是悄悄地做继续做错误的事情。尽可能快地发现程序中的错误是有好处的。</p>
+<p>当程序员第一次被这个问题困扰时，他们可能会在程序结束后立即清空所有对象引用。这既不是必要的，也不是可取的；它不必要地搞乱了程序。<strong>清空对象引用应该是例外而不是规范</strong>。消除过期引用的最好方法是让包含引用的变量超出范围。如果在最近的作用域范围内定义每个变量(条目 57)，这种自然就会出现这种情况。</p>
+<p>那么什么时候应该清空一个引用呢？<code>Stack</code>类的哪个方面使它容易受到内存泄漏的影响？简单地说，它管理自己的内存。存储池（storage pool）由<code>elements</code>数组的元素组成(对象引用单元，而不是对象本身)。数组中活动部分的元素(如前面定义的)被分配，其余的元素都是空闲的。垃圾收集器没有办法知道这些；对于垃圾收集器来说，<code>elements</code>数组中的所有对象引用都同样有效。只有程序员知道数组的非活动部分不重要。程序员可以向垃圾收集器传达这样一个事实，一旦数组中的元素变成非活动的一部分，就可以手动清空这些元素的引用。</p>
+<p>一般来说，<strong>当一个类自己管理内存时，程序员应该警惕内存泄漏问题</strong>。 每当一个元素被释放时，元素中包含的任何对象引用都应该被清除。</p>
+<p><strong>另一个常见的内存泄漏来源是缓存</strong>。一旦将对象引用放入缓存中，很容易忘记它的存在，并且在它变得无关紧要之后，仍然保留在缓存中。对于这个问题有几种解决方案。如果你正好想实现了一个缓存：只要在缓存之外存在对某个项（entry）的键（key）引用，那么这项就是明确有关联的，就可以用<code>WeakHashMap</code>来表示缓存；这些项在过期之后自动删除。记住，只有当缓存中某个项的生命周期是由外部引用到键（key）而不是值（value）决定时，<code>WeakHashMap</code>才有用。</p>
+<p>更常见的情况是，缓存项有用的生命周期不太明确，随着时间的推移一些项变得越来越没有价值。在这种情况下，缓存应该偶尔清理掉已经废弃的项。这可以通过一个后台线程(也许是<code>ScheduledThreadPoolExecutor</code>)或将新的项添加到缓存时顺便清理。<code>LinkedHashMap</code>类使用它的<code>removeEldestEntry</code>方法实现了后一种方案。对于更复杂的缓存，可能直接需要使用<code>java.lang.ref</code>。</p>
+<p>第三个常见的内存泄漏来源是监听器和其他回调。如果你实现了一个API，其客户端注册回调，但是没有显式地撤销注册回调，除非采取一些操作，否则它们将会累积。确保回调是垃圾收集的一种方法是只存储弱引用（weak references），例如，仅将它们保存在<code>WeakHashMap</code>的键（key）中。</p>
+<p>因为内存泄漏通常不会表现为明显的故障，所以它们可能会在系统中保持多年。 通常仅在仔细的代码检查或借助堆分析器（ heap profiler）的调试工具才会被发现。 因此，学习如何预见这些问题，并防止这些问题发生，是非常值得的。</p>
+<h2 id="8-避免使用Finalizer和Cleaner机制"><a href="#8-避免使用Finalizer和Cleaner机制" class="headerlink" title="8. 避免使用Finalizer和Cleaner机制"></a>8. 避免使用Finalizer和Cleaner机制</h2><p>Finalizer机制是不可预知的，往往是危险的，而且通常是不必要的。 它们的使用会导致不稳定的行为，糟糕的性能和移植性问题。 Finalizer机制有一些特殊的用途，我们稍后会在这个条目中介绍，但是通常应该避免它们。 从Java 9开始，Finalizer机制已被弃用，但仍被Java类库所使用。 Java 9中 Cleaner机制代替了Finalizer机制。 Cleaner机制不如Finalizer机制那样危险，但仍然是不可预测，运行缓慢并且通常是不必要的。</p>
+<p>提醒C++程序员不要把Java中的Finalizer或Cleaner机制当成的C ++析构函数的等价物。 在C++中，析构函数是回收对象相关资源的正常方式，是与构造方法相对应的。 在Java中，当一个对象变得不可达时，垃圾收集器回收与对象相关联的存储空间，不需要开发人员做额外的工作。 C ++析构函数也被用来回收其他非内存资源。 在Java中，try-with-resources或try-finally块用于此目的（条目 9）。</p>
+<p>Finalizer和Cleaner机制的一个缺点是不能保证他们能够及时执行[JLS，12.6]。 在一个对象变得无法访问时，到Finalizer和Cleaner机制开始运行时，这期间的时间是任意长的。 这意味着你永远不应该Finalizer和Cleaner机制做任何时间敏感（time-critical）的事情。 例如，依赖于Finalizer和Cleaner机制来关闭文件是严重的错误，因为打开的文件描述符是有限的资源。 如果由于系统迟迟没有运行Finalizer和Cleaner机制而导致许多文件被打开，程序可能会失败，因为它不能再打开文件了。</p>
+<p>及时执行Finalizer和 Cleaner机制是垃圾收集算法的一个功能，这种算法在不同的实现中有很大的不同。程序的行为依赖于Finalizer和 Cleaner机制的及时执行，其行为也可能大不不同。 这样的程序完全可以在你测试的JVM上完美运行，然而在你最重要的客户的机器上可能运行就会失败。</p>
+<p>延迟终结（finalization）不只是一个理论问题。为一个类提供一个Finalizer机制可以任意拖延它的实例的回收。一位同事调试了一个长时间运行的GUI应用程序，这个应用程序正在被一个OutOfMemoryError错误神秘地死掉。分析显示，在它死亡的时候，应用程序的Finalizer机制队列上有成千上万的图形对象正在等待被终结和回收。不幸的是，Finalizer机制线程的运行优先级低于其他应用程序线程，所以对象被回收的速度低于进入队列的速度。语言规范并不保证哪个线程执行Finalizer机制，因此除了避免使用Finalizer机制之外，没有轻便的方法来防止这类问题。在这方面， Cleaner机制比Finalizer机制要好一些，因为Java类的创建者可以控制自己cleaner机制的线程，但cleaner机制仍然在后台运行，在垃圾回收器的控制下运行，但不能保证及时清理。</p>
+<p>Java规范不能保证Finalizer和Cleaner机制能及时运行；它甚至不能能保证它们是否会运行。当一个程序结束后，一些不可达对象上的Finalizer和Cleaner机制仍然没有运行。因此，不应该依赖于Finalizer和Cleaner机制来更新持久化状态。例如，依赖于Finalizer和Cleaner机制来释放对共享资源(如数据库)的持久锁，这是一个使整个分布式系统陷入停滞的好方法。</p>
+<p>不要相信<code>System.gc</code>和<code>System.runFinalization</code>方法。 他们可能会增加Finalizer和Cleaner机制被执行的几率，但不能保证一定会执行。 曾经声称做出这种保证的两个方法：<code>System.runFinalizersOnExit</code>和它的孪生兄弟<code>Runtime.runFinalizersOnExit</code>，包含致命的缺陷，并已被弃用了几十年[ThreadStop]。</p>
+<p>Finalizer机制的另一个问题是在执行Finalizer机制过程中，未捕获的异常会被忽略，并且该对象的Finalizer机制也会终止 [JLS, 12.6]。未捕获的异常会使其他对象陷入一种损坏的状态（corrupt state）。如果另一个线程试图使用这样一个损坏的对象，可能会导致任意不确定的行为。通常情况下，未捕获的异常将终止线程并打印堆栈跟踪（ stacktrace），但如果发生在Finalizer机制中，则不会发出警告。Cleaner机制没有这个问题，因为使用Cleaner机制的类库可以控制其线程。</p>
+<p>使用finalizer和cleaner机制会导致严重的性能损失。 在我的机器上，创建一个简单的<code>AutoCloseable</code>对象，使用try-with-resources关闭它，并让垃圾回收器回收它的时间大约是12纳秒。 使用finalizer机制，而时间增加到550纳秒。 换句话说，使用finalizer机制创建和销毁对象的速度要慢50倍。 这主要是因为finalizer机制会阻碍有效的垃圾收集。 如果使用它们来清理类的所有实例(在我的机器上的每个实例大约是500纳秒)，那么cleaner机制的速度与finalizer机制的速度相当，但是如果仅将它们用作安全网（ safety net），则cleaner机制要快得多，如下所述。 在这种环境下，创建，清理和销毁一个对象在我的机器上需要大约66纳秒，这意味着如果你不使用安全网的话，需要支付5倍(而不是50倍)的保险。</p>
+<p>finalizer机制有一个严重的安全问题：它们会打开你的类来进行finalizer机制攻击。finalizer机制攻击的想法很简单：如果一个异常是从构造方法或它的序列化中抛出的——<code>readObjec</code>t和<code>readResolve</code>方法(第12章)——恶意子类的finalizer机制可以运行在本应该“中途夭折（died on the vine）”的部分构造对象上。finalizer机制可以在静态字属性记录对对象的引用，防止其被垃圾收集。一旦记录了有缺陷的对象，就可以简单地调用该对象上的任意方法，而这些方法本来就不应该允许存在。从构造方法中抛出异常应该足以防止对象出现；而在finalizer机制存在下，则不是。这样的攻击会带来可怕的后果。Final类不受finalizer机制攻击的影响，因为没有人可以编写一个final类的恶意子类。为了保护非final类不受finalizer机制攻击，编写一个final的<code>finalize</code>方法，它什么都不做。</p>
+<p>那么，你应该怎样做呢？为对象封装需要结束的资源(如文件或线程)，而不是为该类编写Finalizer和Cleaner机制？让你的类实现<code>AutoCloseable</code>接口即可，并要求客户在在不再需要时调用每个实例close方法，通常使用try-with-resources确保终止，即使面对有异常抛出情况（条目 9）。一个值得一提的细节是实例必须跟踪是否已经关闭：close方法必须记录在对象里不再有效的属性，其他方法必须检查该属性，如果在对象关闭后调用它们，则抛出IllegalStateException异常。</p>
+<p>那么，Finalizer和Cleaner机制有什么好处呢？它们可能有两个合法用途。一个是作为一个安全网（safety net），以防资源的拥有者忽略了它的<code>close</code>方法。虽然不能保证Finalizer和Cleaner机制会迅速运行(或者根本就没有运行)，最好是把资源释放晚点出来，也要好过客户端没有这样做。如果你正在考虑编写这样的安全网Finalizer机制，请仔细考虑一下这样保护是否值得付出对应的代价。一些Java库类，如<code>FileInputStream</code>、<code>FileOutputStream</code>、<code>ThreadPoolExecutor</code>和<code>java.sql.Connection</code>，都有作为安全网的Finalizer机制。</p>
+<p>第二种合理使用Cleaner机制的方法与本地对等类（native peers）有关。本地对等类是一个由普通对象委托的本地(非Java)对象。由于本地对等类不是普通的 Java对象，所以垃圾收集器并不知道它，当它的Java对等对象被回收时，本地对等类也不会回收。假设性能是可以接受的，并且本地对等类没有关键的资源，那么Finalizer和Cleaner机制可能是这项任务的合适的工具。但如果性能是不可接受的，或者本地对等类持有必须迅速回收的资源，那么类应该有一个<code>close</code>方法，正如前面所述。</p>
+<p>Cleaner机制使用起来有点棘手。下面是演示该功能的一个简单的<code>Room</code>类。假设<code>Room</code>对象必须在被回收前清理干净。<code>Room</code>类实现<code>AutoCloseable</code>接口；它的自动清理安全网使用的是一个Cleaner机制，这仅仅是一个实现细节。与Finalizer机制不同，Cleaner机制不污染一个类的公共API：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">// An autocloseable class using a cleaner as a safety net</span><br><span class="line">public class Room implements AutoCloseable &#123;</span><br><span class="line">    private static final Cleaner cleaner = Cleaner.create();</span><br><span class="line"></span><br><span class="line">    // Resource that requires cleaning. Must not refer to Room!</span><br><span class="line">    private static class State implements Runnable &#123;</span><br><span class="line">        int numJunkPiles; // Number of junk piles in this room</span><br><span class="line"></span><br><span class="line">        State(int numJunkPiles) &#123;</span><br><span class="line">            this.numJunkPiles = numJunkPiles;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // Invoked by close method or cleaner</span><br><span class="line">        @Override</span><br><span class="line">        public void run() &#123;</span><br><span class="line">            System.out.println(&quot;Cleaning room&quot;);</span><br><span class="line">            numJunkPiles = 0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // The state of this room, shared with our cleanable</span><br><span class="line">    private final State state;</span><br><span class="line"></span><br><span class="line">    // Our cleanable. Cleans the room when it’s eligible for gc</span><br><span class="line">    private final Cleaner.Cleanable cleanable;</span><br><span class="line"></span><br><span class="line">    public Room(int numJunkPiles) &#123;</span><br><span class="line">        state = new State(numJunkPiles);</span><br><span class="line">        cleanable = cleaner.register(this, state);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void close() &#123;</span><br><span class="line">        cleanable.clean();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>静态内部<code>State</code>类拥有Cleaner机制清理房间所需的资源。 在这里，它仅仅包含<code>numJunkPiles</code>属性，它代表混乱房间的数量。 更实际地说，它可能是一个final修饰的<code>long</code>类型的指向本地对等类的指针。 <code>State</code>类实现了<code>Runnable</code>接口，其<code>run</code>方法最多只能调用一次，只能被我们在<code>Room</code>构造方法中用Cleaner机制注册<code>State</code>实例时得到的<code>Cleanable</code>调用。 对<code>run</code>方法的调用通过以下两种方法触发：通常，通过调用<code>Room</code>的<code>close</code>方法内调用<code>Cleanable</code>的<code>clean</code>方法来触发。 如果在<code>Room</code>实例有资格进行垃圾回收的时候客户端没有调用<code>close</code>方法，那么Cleaner机制将（希望）调用<code>State</code>的<code>run</code>方法。</p>
+<p>一个<code>State</code>实例不引用它的<code>Room</code>实例是非常重要的。如果它引用了，则创建了一个循环，阻止了<code>Room</code>实例成为垃圾收集的资格(以及自动清除)。因此，<code>State</code>必须是静态的嵌内部类，因为非静态内部类包含对其宿主类的实例的引用(条目 24)。同样，使用lambda表达式也是不明智的，因为它们很容易获取对宿主类对象的引用。</p>
+<p>就像我们之前说的，<code>Room</code>的Cleaner机制仅仅被用作一个安全网。如果客户将所有<code>Room</code>的实例放在try-with-resource块中，则永远不需要自动清理。行为良好的客户端如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public class Adult &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        try (Room myRoom = new Room(7)) &#123;</span><br><span class="line">            System.out.println(&quot;Goodbye&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正如你所预料的，运行<code>Adult</code>程序会打印<code>Goodbye</code>字符串，随后打印<code>Cleaning room</code>字符串。但是如果时不合规矩的程序，它从来不清理它的房间会是什么样的?</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class Teenager &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new Room(99);</span><br><span class="line">        System.out.println(&quot;Peace out&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你可能期望它打印出<code>Peace out</code>，然后打印<code>Cleaning room</code>字符串，但在我的机器上，它从不打印<code>Cleaning room</code>字符串；仅仅是程序退出了。 这是我们之前谈到的不可预见性。 Cleaner机制的规范说：“<code>System.exit</code>方法期间的清理行为是特定于实现的。 不保证清理行为是否被调用。”虽然规范没有说明，但对于正常的程序退出也是如此。 在我的机器上，将<code>System.gc()</code>方法添加到<code>Teenager</code>类的<code>main</code>方法足以让程序退出之前打印<code>Cleaning room</code>，但不能保证在你的机器上会看到相同的行为。</p>
+<p>总之，除了作为一个安全网或者终止非关键的本地资源，不要使用Cleaner机制，或者是在Java 9发布之前的finalizers机制。即使是这样，也要当心不确定性和性能影响。</p>
+<h2 id="9-使用try-with-resources语句替代try-finally语句"><a href="#9-使用try-with-resources语句替代try-finally语句" class="headerlink" title="9. 使用try-with-resources语句替代try-finally语句"></a>9. 使用try-with-resources语句替代try-finally语句</h2><p>Java类库中包含许多必须通过调用<code>close</code>方法手动关闭的资源。 比如<code>InputStream</code>，<code>OutputStream</code>和<code>java.sql.Connection</code>。 客户经常忽视关闭资源，其性能结果可想而知。 尽管这些资源中有很多使用finalizer机制作为安全网，但finalizer机制却不能很好地工作（条目 8）。</p>
+<p>从以往来看，try-finally语句是保证资源正确关闭的最佳方式，即使是在程序抛出异常或返回的情况下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// try-finally - No longer the best way to close resources!</span><br><span class="line">static String firstLineOfFile(String path) throws IOException &#123;</span><br><span class="line">    BufferedReader br = new BufferedReader(new FileReader(path));</span><br><span class="line">    try &#123;</span><br><span class="line">        return br.readLine();</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        br.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这可能看起来并不坏，但是当添加第二个资源时，情况会变得更糟：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// try-finally is ugly when used with more than one resource!</span><br><span class="line">static void copy(String src, String dst) throws IOException &#123;</span><br><span class="line">    InputStream in = new FileInputStream(src);</span><br><span class="line">    try &#123;</span><br><span class="line">        OutputStream out = new FileOutputStream(dst);</span><br><span class="line">        try &#123;</span><br><span class="line">            byte[] buf = new byte[BUFFER_SIZE];</span><br><span class="line">            int n;</span><br><span class="line">            while ((n = in.read(buf)) &gt;= 0)</span><br><span class="line">                out.write(buf, 0, n);</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            out.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">        in.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这可能很难相信，但即使是优秀的程序员，大多数时候也会犯错误。首先，我在Java Puzzlers[Bloch05]的第88页上弄错了，多年来没有人注意到。事实上，2007年Java类库中使用<code>close</code>方法的三分之二都是错误的。</p>
+<p>即使是用try-finally语句关闭资源的正确代码，如前面两个代码示例所示，也有一个微妙的缺陷。 try-with-resources块和finally块中的代码都可以抛出异常。 例如，在<code>firstLineOfFile</code>方法中，由于底层物理设备发生故障，对<code>readLine</code>方法的调用可能会引发异常，并且由于相同的原因，调用<code>close</code>方法可能会失败。 在这种情况下，第二个异常完全冲掉了第一个异常。 在异常堆栈跟踪中没有第一个异常的记录，这可能使实际系统中的调试非常复杂——通常这是你想要诊断问题的第一个异常。 虽然可以编写代码来抑制第二个异常，但是实际上没有人这样做，因为它太冗长了。</p>
+<p>当Java 7引入了try-with-resources语句时，所有这些问题一下子都得到了解决[JLS,14.20.3]。要使用这个构造，资源必须实现 <code>AutoCloseable</code>接口，该接口由一个返回为<code>void</code>的<code>close</code>组成。Java类库和第三方类库中的许多类和接口现在都实现或继承了<code>AutoCloseable</code>接口。如果你编写的类表示必须关闭的资源，那么这个类也应该实现<code>AutoCloseable</code>接口。</p>
+<p>以下是我们的第一个使用try-with-resources的示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// try-with-resources - the the best way to close resources!</span><br><span class="line">static String firstLineOfFile(String path) throws IOException &#123;</span><br><span class="line">    try (BufferedReader br = new BufferedReader(</span><br><span class="line">           new FileReader(path))) &#123;</span><br><span class="line">       return br.readLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下是我们的第二个使用try-with-resources的示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// try-with-resources on multiple resources - short and sweet</span><br><span class="line">static void copy(String src, String dst) throws IOException &#123;</span><br><span class="line">    try (InputStream   in = new FileInputStream(src);</span><br><span class="line">         OutputStream out = new FileOutputStream(dst)) &#123;</span><br><span class="line">        byte[] buf = new byte[BUFFER_SIZE];</span><br><span class="line">        int n;</span><br><span class="line">        while ((n = in.read(buf)) &gt;= 0)</span><br><span class="line">            out.write(buf, 0, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不仅 try-with-resources版本比原始版本更精简，更好的可读性，而且它们提供了更好的诊断。 考虑<code>firstLineOfFile</code>方法。 如果调用<code>readLine</code>和（不可见）<code>close</code>方法都抛出异常，则后一个异常将被抑制（suppressed），而不是前者。 事实上，为了保留你真正想看到的异常，可能会抑制多个异常。 这些抑制的异常没有呗被抛弃， 而是打印在堆栈跟踪中，并标注为被抑制了。 你也可以使用<code>getSuppressed</code>方法以编程方式访问它们，该方法在Java 7中已添加到的<code>Throwable</code>中。</p>
+<p>可以在 try-with-resources语句中添加catch子句，就像在常规的try-finally语句中一样。这允许你处理异常，而不会在另一层嵌套中污染代码。作为一个稍微有些做作的例子，这里有一个版本的<code>firstLineOfFile</code>方法，它不会抛出异常，但是如果它不能打开或读取文件，则返回默认值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// try-with-resources with a catch clause</span><br><span class="line">static String firstLineOfFile(String path, String defaultVal) &#123;</span><br><span class="line">    try (BufferedReader br = new BufferedReader(</span><br><span class="line">           new FileReader(path))) &#123;</span><br><span class="line">        return br.readLine();</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">        return defaultVal;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结论明确：在处理必须关闭的资源时，使用try-with-resources语句替代try-finally语句。 生成的代码更简洁，更清晰，并且生成的异常更有用。 try-with-resources语句在编写必须关闭资源的代码时会更容易，也不会出错，而使用try-finally语句实际上是不可能的。</p>
+<h2 id="10-重写equals方法时遵守通用约定"><a href="#10-重写equals方法时遵守通用约定" class="headerlink" title="10. 重写equals方法时遵守通用约定"></a>10. 重写equals方法时遵守通用约定</h2><p>虽然<code>Object</code>是一个具体的类，但它主要是为继承而设计的。它的所有非 final方法(equals、hashCode、toString、clone和finalize)都有清晰的通用约定（ general contracts），因为它们被设计为被子类重写。任何类都有义务重写这些方法，以遵从他们的通用约定；如果不这样做，将会阻止其他依赖于约定的类(例如HashMap和HashSet)与此类一起正常工作。</p>
+<p>本章论述何时以及如何重写<code>Object</code>类的非final的方法。这一章省略了finalize方法，因为它在条目 8中进行了讨论。<code>Comparable.compareTo</code>方法虽然不是<code>Object</code>中的方法，因为具有很多的相似性，所以也在这里讨论。</p>
+<p>重写equals方法看起来很简单，但是有很多方式会导致重写出错，其结果可能是可怕的。避免此问题的最简单方法不是覆盖equals方法，在这种情况下，类的每个实例只与自身相等。如果满足以下任一下条件，则说明是正确的做法：</p>
+<ul>
+<li><p>每个类的实例都是固有唯一的。 对于像Thread这样代表活动实体而不是值的类来说，这是正确的。 Object提供的equals实现对这些类完全是正确的行为。</p>
+</li>
+<li><p>类不需要提供一个“逻辑相等（logical equality）”的测试功能。例如<code>java.util.regex.Pattern</code>可以重写equals 方法检查两个是否代表完全相同的正则表达式Pattern实例，但是设计者并不认为客户需要或希望使用此功能。在这种情况下，从Object继承的equals实现是最合适的。</p>
+</li>
+<li><p>父类已经重写了equals方法，则父类行为完全适合于该子类。例如，大多数Set从AbstractSet继承了equals实现、List从AbstractList继承了equals实现，Map从AbstractMap的Map继承了equals实现。</p>
+</li>
+<li><p>类是私有的或包级私有的，可以确定它的equals方法永远不会被调用。如果你非常厌恶风险，可以重写equals方法，以确保不会被意外调用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@Override public boolean equals(Object o) &#123;</span><br><span class="line">throw new AssertionError(); // Method is never called</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>那什么时候需要重写 equals 方法呢？如果一个类包含一个逻辑相等（ logical equality）的概念，此概念有别于对象标识（object identity），而且父类还没有重写过equals 方法。这通常用在值类（ value classes）的情况。值类只是一个表示值的类，例如Integer或String类。程序员使用equals方法比较值对象的引用，期望发现它们在逻辑上是否相等，而不是引用相同的对象。重写 equals方法不仅可以满足程序员的期望，它还支持重写过equals 的实例作为Map 的键（key），或者 Set 里的元素，以满足预期和期望的行为。</p>
+<p>一种不需要equals方法重写的值类是使用实例控制（instance control）（条目 1）的类，以确保每个值至多存在一个对象。 枚举类型（条目 34）属于这个类别。 对于这些类，逻辑相等与对象标识是一样的，所以Object的equals方法作用逻辑equals方法。</p>
+<p>当你重写equals方法时，必须遵守它的通用约定。Object的规范如下：<br>equals方法实现了一个等价关系（equivalence relation）。它有以下这些属性:<br>•自反性：对于任何非空引用x，<code>x.equals(x)</code>必须返回true。<br>•对称性：对于任何非空引用x和y，如果且仅当<code>y.equals(x)</code>返回true时<code>x.equals(y)</code>必须返回true。<br>•传递性：对于任何非空引用x、y、z，如果<code>x.equals(y)</code>返回true，<code>y.equals(z)</code>返回true，则<code>x.equals(z)</code>必须返回true。<br>•一致性：对于任何非空引用x和y，如果在equals比较中使用的信息没有修改，则<code>x.equals(y)</code>的多次调用必须始终返回true或始终返回false。<br>•对于任何非空引用x，<code>x.equals(null)</code>必须返回false。</p>
+<p>除非你喜欢数学，否则这看起来有点吓人，但不要忽略它！如果一旦违反了它，很可能会发现你的程序运行异常或崩溃，并且很难确定失败的根源。套用约翰·多恩(John Donne)的说法，没有哪个类是孤立存在的。一个类的实例常常被传递给另一个类的实例。许多类，包括所有的集合类，都依赖于传递给它们遵守equals约定的对象。</p>
+<p>既然已经意识到违反equals约定的危险，让我们详细地讨论一下这个约定。好消息是，表面上看，这并不是很复杂。一旦你理解了，就不难遵守这一约定。</p>
+<p>那么什么是等价关系？ 笼统地说，它是一个运算符，它将一组元素划分为彼此元素相等的子集。 这些子集被称为等价类（equivalence classes）。 为了使equals方法有用，每个等价类中的所有元素必须从用户的角度来说是可以互换（interchangeable）的。 现在让我们依次看下这个五个要求：</p>
+<p>自反性（Reflexivity）——第一个要求只是说一个对象必须与自身相等。 很难想象无意中违反了这个规定。 如果你违反了它，然后把类的实例添加到一个集合中，那么<code>contains</code>方法可能会说集合中没有包含刚添加的实例。</p>
+<p>对称性（Symmetry）——第二个要求是，任何两个对象必须在是否相等的问题上达成一致。与第一个要求不同的是，我们不难想象在无意中违反了这一要求。例如，考虑下面的类，它实现了不区分大小写的字符串。字符串被toString保存，但在equals比较中被忽略：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import java.util.Objects;</span><br><span class="line"></span><br><span class="line">public final class CaseInsensitiveString &#123;</span><br><span class="line">    private final String s;</span><br><span class="line"></span><br><span class="line">    public CaseInsensitiveString(String s) &#123;</span><br><span class="line">        this.s = Objects.requireNonNull(s);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // Broken - violates symmetry!</span><br><span class="line">    @Override</span><br><span class="line">    public boolean equals(Object o) &#123;</span><br><span class="line">        if (o instanceof CaseInsensitiveString)</span><br><span class="line">            return s.equalsIgnoreCase(</span><br><span class="line">                    ((CaseInsensitiveString) o).s);</span><br><span class="line">        if (o instanceof String)  // One-way interoperability!</span><br><span class="line">            return s.equalsIgnoreCase((String) o);</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    ...// Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面类中的 equals 试图与正常的字符串进行操作，假设我们有一个不区分大小写的字符串和一个正常的字符串：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">CaseInsensitiveString cis = new CaseInsensitiveString(&quot;Polish&quot;);</span><br><span class="line">String s = &quot;polish”;</span><br><span class="line"></span><br><span class="line">System.out.println(cis.equals(s)); // true</span><br><span class="line">System.out.println(s.equals(cis)); // false</span><br></pre></td></tr></table></figure>
+<p>正如所料，<code>cis.equals(s)</code>返回true。 问题是，尽管<code>CaseInsensitiveString</code>类中的equals方法知道正常字符串，但String类中的equals方法却忽略了不区分大小写的字符串。 因此，<code>s.equals(cis</code>)返回false，明显违反对称性。 假设把一个不区分大小写的字符串放入一个集合中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;CaseInsensitiveString&gt; list = new ArrayList&lt;&gt;();</span><br><span class="line">list.add(cis);</span><br></pre></td></tr></table></figure>
+<p><code>list.contains(s)</code>返回了什么？谁知道呢？在当前的OpenJDK实现中，它会返回false，但这只是一个实现构件。在另一个实现中，它可以很容易地返回true或抛出运行时异常。一旦违反了equals约定，就不知道其他对象在面对你的对象时会如何表现了。</p>
+<p>要消除这个问题，只需删除equals方法中与String类相互操作的恶意尝试。这样做之后，可以将该方法重构为单个返回语句:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean equals(Object o) &#123;</span><br><span class="line">    return o instanceof CaseInsensitiveString &amp;&amp;</span><br><span class="line">            ((CaseInsensitiveString) o).s.equalsIgnoreCase(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>传递性（Transitivity）——equals 约定的第三个要求是，如果第一个对象等于第二个对象，第二个对象等于第三个对象，那么第一个对象必须等于第三个对象。同样，也不难想象，无意中违反了这一要求。考虑子类的情况， 将新值组件（ value component）添加到其父类中。换句话说，子类添加了一个信息，它影响了equals方法比较。让我们从一个简单不可变的二维整数类型Point类开始：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public class Point &#123;</span><br><span class="line">    private final int x;</span><br><span class="line">    private final int y;</span><br><span class="line"></span><br><span class="line">    public Point(int x, int y) &#123;</span><br><span class="line">        this.x = x;</span><br><span class="line">        this.y = y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean equals(Object o) &#123;</span><br><span class="line">        if (!(o instanceof Point))</span><br><span class="line">            return false;</span><br><span class="line">        Point p = (Point) o;</span><br><span class="line">        return p.x == x &amp;&amp; p.y == y;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...  // Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>假设想继承这个类，将表示颜色的Color类添加到Point类中：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class ColorPoint extends Point &#123;</span><br><span class="line">    private final Color color;</span><br><span class="line"></span><br><span class="line">    public ColorPoint(int x, int y, Color color) &#123;</span><br><span class="line">        super(x, y);</span><br><span class="line">        this.color = color;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ...  // Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>equals方法应该是什么样子?如果完全忽略，则实现是从Point类上继承的，颜色信息在equals方法比较中被忽略。虽然这并不违反equals约定，但这显然是不可接受的。假设你写了一个equals方法，它只在它的参数是另一个具有相同位置和颜色的ColorPoint实例时返回true：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Broken - violates symmetry!</span><br><span class="line">@Override public boolean equals(Object o) &#123;</span><br><span class="line">    if (!(o instanceof ColorPoint))</span><br><span class="line">        return false;</span><br><span class="line">    return super.equals(o) &amp;&amp; ((ColorPoint) o).color == color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当你比较Point对象和ColorPoint对象时，可以会得到不同的结果，反之亦然。前者的比较忽略了颜色属性，而后者的比较会一直返回 false，因为参数的类型是错误的。为了让问题更加具体，我们创建一个Point对象和ColorPoint对象：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Point p = new Point(1, 2);</span><br><span class="line">ColorPoint cp = new ColorPoint(1, 2, Color.RED);</span><br></pre></td></tr></table></figure>
+<p>p.equals(cp)返回 true，但是 cp.equals(p)返回 false。你可能想使用ColorPoint.equals 通过混合比较的方式来解决这个问题。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean equals(Object o) &#123;</span><br><span class="line">    if (!(o instanceof Point))</span><br><span class="line">        return false;</span><br><span class="line"></span><br><span class="line">    // If o is a normal Point, do a color-blind comparison</span><br><span class="line">    if (!(o instanceof ColorPoint))</span><br><span class="line">        return o.equals(this);</span><br><span class="line"></span><br><span class="line">    // o is a ColorPoint; do a full comparison</span><br><span class="line">    return super.equals(o) &amp;&amp; ((ColorPoint) o).color == color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方法确实提供了对称性，但是丧失了传递性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ColorPoint p1 = new ColorPoint(1, 2, Color.RED);</span><br><span class="line">Point p2 = new Point(1, 2);</span><br><span class="line">ColorPoint p3 = new ColorPoint(1, 2, Color.BLUE);</span><br></pre></td></tr></table></figure>
+<p>现在，<code>p1.equals(p2)</code>和<code>p2.equals(p3)</code> 返回了 true，但是<code>p1.equals(p3)</code>却返回了 false，很明显违背了传递性的要求。前两个比较都是不考虑颜色信息的，而第三个比较时却包含颜色信息。</p>
+<p>此外，这种方法可能导致无限递归：假设有两个Point的子类，比如ColorPoint和SmellPoint，每个都有这种equals方法。 然后调用<code>myColorPoint.equals(mySmellPoint)</code>将抛出一个StackOverflowError异常。</p>
+<p>那么解决方案是什么？ 事实证明，这是面向对象语言中关于等价关系的一个基本问题。 除非您愿意放弃面向对象抽象的好处，否则无法继承可实例化的类，并在保留 equals 约定的同时添加一个值组件。</p>
+<p>你可能听说过，可以继承一个可实例化的类并添加一个值组件，同时通过在equals方法中使用一个getClass测试代替instanceof测试来保留equals约定：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean equals(Object o) &#123;</span><br><span class="line">    if (o == null || o.getClass() != getClass())</span><br><span class="line">        return false;</span><br><span class="line">    Point p = (Point) o;</span><br><span class="line">    return p.x == x &amp;&amp; p.y == y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>只有当对象具有相同的实现类时，才会产生相同的效果。这看起来可能不是那么糟糕，但是结果是不可接受的:一个Point类子类的实例仍然是一个Point的实例，它仍然需要作为一个Point来运行，但是如果你采用这个方法，就会失败！假设我们要写一个方法来判断一个Point 对象是否在unitCircle集合中。我们可以这样做：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">private static final Set&lt;Point&gt; unitCircle = Set.of(</span><br><span class="line">        new Point( 1,  0), new Point( 0,  1),</span><br><span class="line">        new Point(-1,  0), new Point( 0, -1));</span><br><span class="line"></span><br><span class="line">public static boolean onUnitCircle(Point p) &#123;</span><br><span class="line">    return unitCircle.contains(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然这可能不是实现功能的最快方法，但它可以正常工作。假设以一种不添加值组件的简单方式继承 Point 类，比如让它的构造方法跟踪记录创建了多少实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class CounterPoint extends Point &#123;</span><br><span class="line">    private static final AtomicInteger counter =</span><br><span class="line">            new AtomicInteger();</span><br><span class="line"></span><br><span class="line">    public CounterPoint(int x, int y) &#123;</span><br><span class="line">        super(x, y);</span><br><span class="line">        counter.incrementAndGet();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static int numberCreated() &#123;</span><br><span class="line">        return counter.get();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>里氏替代原则（ Liskov substitution principle）指出，任何类型的重要属性都应该适用于所有的子类型，因此任何为这种类型编写的方法都应该在其子类上同样适用[Liskov87]。 这是我们之前声明的一个正式陈述，即Point的子类（如CounterPoint）仍然是一个Point，必须作为一个Point类来看待。 但是，假设我们将一个CounterPoint对象传递给onUnitCircle方法。 如果Point类使用基于getClass的equals方法，则无论CounterPoint实例的x和y坐标如何，onUnitCircle方法都将返回false。 这是因为大多数集合（包括onUnitCircle方法使用的HashSet）都使用equals方法来测试是否包含元素，并且CounterPoint实例并不等于任何Point实例。 但是，如果在Point上使用了适当的基于<code>instanceof</code>的equals方法，则在使用CounterPoint实例呈现时，同样的onUnitCircle方法可以正常工作。</p>
+<p>虽然没有令人满意的方法来继承一个可实例化的类并添加一个值组件，但是有一个很好的变通方法：按照条目18的建议，“优先使用组合而不是继承”。取代继承Point类的ColorPoint类，可以在ColorPoint类中定义一个私有Point属性，和一个公共的试图（view）（条目6）方法，用来返回具有相同位置的ColorPoint对象。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// Adds a value component without violating the equals contract</span><br><span class="line">public class ColorPoint &#123;</span><br><span class="line">    private final Point point;</span><br><span class="line">    private final Color color;</span><br><span class="line"></span><br><span class="line">    public ColorPoint(int x, int y, Color color) &#123;</span><br><span class="line">        point = new Point(x, y);</span><br><span class="line">        this.color = Objects.requireNonNull(color);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    /**</span><br><span class="line">     * Returns the point-view of this color point.</span><br><span class="line">     */</span><br><span class="line">    public Point asPoint() &#123;</span><br><span class="line">        return point;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override public boolean equals(Object o) &#123;</span><br><span class="line">        if (!(o instanceof ColorPoint))</span><br><span class="line">            return false;</span><br><span class="line">        ColorPoint cp = (ColorPoint) o;</span><br><span class="line">        return cp.point.equals(point) &amp;&amp; cp.color.equals(color);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...    // Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Java平台类库中有一些类可以继承可实例化的类并添加一个值组件。 例如，<code>java.sql.Timestamp</code>继承了<code>java.util.Date</code>并添加了一个nanoseconds字段。 Timestamp的等价equals确实违反了对称性，并且如果Timestamp和Date对象在同一个集合中使用，或者以其他方式混合使用，则可能导致不稳定的行为。 Timestamp类有一个免责声明，告诫程序员不要混用Timestamp和Date。 虽然只要将它们分开使用就不会遇到麻烦，但没有什么可以阻止你将它们混合在一起，并且由此产生的错误可能很难调试。 Timestamp类的这种行为是一个错误，不应该被仿效。</p>
+<p>你可以将值组件添加到抽象类的子类中，而不会违反equals约定。这对于通过遵循第23个条目中“优先考虑类层级（class hierarchies）来代替标记类（tagged classes）”中的建议而获得的类层级，是非常重要的。例如，可以有一个没有值组件的抽象类Shape，子类Circle有一个radius属性，另一个子类Rectangle包含length和width属性 。 只要不直接创建父类实例，就不会出现前面所示的问题。</p>
+<p>一致性——equals 约定的第四个要求是，如果两个对象是相等的，除非一个（或两个）对象被修改了， 那么它们必须始终保持相等。 换句话说，可变对象可以在不同时期可以与不同的对象相等，而不可变对象则不会。 当你写一个类时，要认真思考它是否应该设计为不可变的（条目 17）。 如果你认为应该这样做，那么确保你的equals方法强制执行这样的限制：相等的对象永远相等，不相等的对象永远都不会相等。</p>
+<p>不管一个类是不是不可变的，都不要写一个依赖于不可靠资源的equals方法。 如果违反这一禁令，满足一致性要求是非常困难的。 例如，java.net.URL类中的equals方法依赖于与URL关联的主机的IP地址的比较。 将主机名转换为IP地址可能需要访问网络，并且不能保证随着时间的推移会产生相同的结果。 这可能会导致URL类的equals方法违反equals 约定，并在实践中造成问题。 URL类的equals方法的行为是一个很大的错误，不应该被效仿。 不幸的是，由于兼容性的要求，它不能改变。 为了避免这种问题，equals方法应该只对内存驻留对象执行确定性计算。</p>
+<p>非空性（Non-nullity）——最后equals 约定的要求没有官方的名称，所以我冒昧地称之为“非空性”。意思是说说所有的对象都必须不等于 null。虽然很难想象在调用 <code>o.equals(null)</code>的响应中意外地返回true，但不难想象不小心抛出<code>NullPointerException</code>异常的情况。通用的约定禁止抛出这样的异常。许多类中的 equals方法都会明确阻止对象为null的情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override public boolean equals(Object o) &#123;</span><br><span class="line">    if (o == null)</span><br><span class="line">        return false;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个判断是不必要的。 为了测试它的参数是否相等，equals方法必须首先将其参数转换为合适类型，以便调用访问器或允许访问的属性。 在执行类型转换之前，该方法必须使用instanceof运算符来检查其参数是否是正确的类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Override public boolean equals(Object o) &#123;</span><br><span class="line">    if (!(o instanceof MyType))</span><br><span class="line">        return false;</span><br><span class="line">    MyType mt = (MyType) o;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果此类型检查漏掉，并且equals方法传递了错误类型的参数，那么equals方法将抛出<code>ClassCastException</code>异常，这违反了equals约定。 但是，如果第一个操作数为 null，则指定instanceof运算符返回false，而不管第二个操作数中出现何种类型[JLS，15.20.2]。 因此，如果传入null，类型检查将返回false，因此不需要 明确的 null检查。</p>
+<p>综合起来，以下是编写高质量equals方法的配方（recipe）：</p>
+<ol>
+<li>使用= =运算符检查参数是否为该对象的引用。如果是，返回true。这只是一种性能优化，但是如果这种比较可能很昂贵的话，那就值得去做。</li>
+<li>使用<code>instanceof</code>运算符来检查参数是否具有正确的类型。 如果不是，则返回false。 通常，正确的类型是equals方法所在的那个类。 有时候，改类实现了一些接口。 如果类实现了一个接口，该接口可以改进 equals约定以允许实现接口的类进行比较，那么使用接口。 集合接口（如Set，List，Map和Map.Entry）具有此特性。</li>
+<li>参数转换为正确的类型。因为转换操作在instanceof中已经处理过，所以它肯定会成功。</li>
+<li>对于类中的每个“重要”的属性，请检查该参数属性是否与该对象对应的属性相匹配。如果所有这些测试成功，返回true，否则返回false。如果步骤2中的类型是一个接口，那么必须通过接口方法访问参数的属性;如果类型是类，则可以直接访问属性，这取决于属性的访问权限。</li>
+</ol>
+<p>对于类型为非float或double的基本类型，使用= =运算符进行比较；对于对象引用属性，递归地调用equals方法；对于float 基本类型的属性，使用静态<code>Float.compare(float, float)</code>方法；对于double 基本类型的属性，使用<code>Double.compare(double, double)</code>方法。由于存在<code>Float.NaN</code>，<code>-0.0f</code>和类似的double类型的值，所以需要对float和double属性进行特殊的处理；有关详细信息，请参阅JLS 15.21.1或Float.equals方法的详细文档。 虽然你可以使用静态方法Float.equals和Double.equals方法对float和double基本类型的属性进行比较，这会导致每次比较时发生自动装箱，引发非常差的性能。 对于数组属性，将这些准则应用于每个元素。 如果数组属性中的每个元素都很重要，请使用其中一个重载的Arrays.equals方法。</p>
+<p>某些对象引用的属性可能合法地包含null。 为避免出现NullPointerException异常，请使用静态方法 Objects.equals(Object, Object)检查这些属性是否相等。</p>
+<p>对于一些类，例如上的<code>CaseInsensitiveString</code>类，属性比较相对于简单的相等性测试要复杂得多。在这种情况下，你想要保存属性的一个规范形式（ canonical form），这样 equals 方法就可以基于这个规范形式去做开销很小的精确比较，来取代开销很大的非标准比较。这种方式其实最适合不可变类（条目 17）。一旦对象发生改变，一定要确保把对应的规范形式更新到最新。</p>
+<p>equals方法的性能可能受到属性比较顺序的影响。 为了获得最佳性能，你应该首先比较最可能不同的属性，开销比较小的属性，或者最好是两者都满足（derived fields）。 你不要比较不属于对象逻辑状态的属性，例如用于同步操作的lock 属性。 不需要比较可以从“重要属性”计算出来的派生属性，但是这样做可以提高equals方法的性能。 如果派生属性相当于对整个对象的摘要描述，比较这个属性将节省在比较失败时再去比较实际数据的开销。 例如，假设有一个Polygon类，并缓存该区域。 如果两个多边形的面积不相等，则不必费心比较它们的边和顶点。</p>
+<p>当你完成编写完equals方法时，问你自己三个问题：它是对称的吗?它是传递吗?它是一致的吗?除此而外，编写单元测试加以排查，除非使用AutoValue框架(第49页)来生成equals方法，在这种情况下可以安全地省略测试。如果持有的属性失败，找出原因，并相应地修改equals方法。当然，equals方法也必须满足其他两个属性(自反性和非空性)，但这两个属性通常都会满足。</p>
+<p>在下面这个简单的<code>PhoneNumber</code>类中展示了根据之前的配方构建的equals方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">public final class PhoneNumber &#123;</span><br><span class="line"></span><br><span class="line">    private final short areaCode, prefix, lineNum;</span><br><span class="line"></span><br><span class="line">    public PhoneNumber(int areaCode, int prefix, int lineNum) &#123;</span><br><span class="line">        this.areaCode = rangeCheck(areaCode, 999, &quot;area code&quot;);</span><br><span class="line">        this.prefix = rangeCheck(prefix, 999, &quot;prefix&quot;);</span><br><span class="line">        this.lineNum = rangeCheck(lineNum, 9999, &quot;line num&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static short rangeCheck(int val, int max, String arg) &#123;</span><br><span class="line">        if (val &lt; 0 || val &gt; max)</span><br><span class="line">            throw new IllegalArgumentException(arg + &quot;: &quot; + val);</span><br><span class="line">        </span><br><span class="line">        return (short) val;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean equals(Object o) &#123;</span><br><span class="line">        if (o == this)</span><br><span class="line">            return true;</span><br><span class="line">        if (!(o instanceof PhoneNumber))</span><br><span class="line">            return false;</span><br><span class="line"></span><br><span class="line">        PhoneNumber pn = (PhoneNumber) o;</span><br><span class="line"></span><br><span class="line">        return pn.lineNum == lineNum &amp;&amp; pn.prefix == prefix</span><br><span class="line">                &amp;&amp; pn.areaCode == areaCode;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ... // Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以下是一些最后提醒：</p>
+<ol>
+<li><p><strong>当重写equals方法时，同时也要重写hashCode方法（条目 11）。</strong></p>
+</li>
+<li><p><strong>不要让equals方法试图太聪明</strong>。如果只是简单地测试用于相等的属性，那么要遵守equals约定并不困难。如果你在寻找相等方面过于激进，那么很容易陷入麻烦。一般来说，考虑到任何形式的别名通常是一个坏主意。例如，File类不应该试图将引用的符号链接等同于同一文件对象。幸好 File 类并没这么做。</p>
+</li>
+<li><p><strong>在equal 时方法声明中，不要将参数Object替换成其他类型</strong>。对于程序员来说，编写一个看起来像这样的equals方法并不少见，然后花上几个小时苦苦思索为什么它不能正常工作：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// Broken - parameter type must be Object!public boolean equals(MyClass o) &#123;   </span><br><span class="line"> …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>问题在于这个方法并没有重写Object.equals方法，它的参数是Object类型的，这样写只是重载了 equals 方法（Item 52）。 即使除了正常的方法之外，提供这种“强类型”的equals方法也是不可接受的，因为它可能会导致子类中的Override注解产生误报，提供不安全的错觉。<br>在这里，使用Override注解会阻止你犯这个错误(条目 40)。这个equals方法不会编译，错误消息会告诉你到底错在哪里：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Still broken, but won’t compile</span><br><span class="line">@Override public boolean equals(MyClass o) &#123;</span><br><span class="line">…</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编写和测试equals(和hashCode)方法很繁琐，生的代码也很普通。替代手动编写和测试这些方法的优雅的手段是，使用谷歌AutoValue开源框架，该框架自动为你生成这些方法，只需在类上添加一个注解即可。在大多数情况下，AutoValue框架生成的方法与你自己编写的方法本质上是相同的。</p>
+</li>
+</ol>
+<p>很多 IDE（例如 Eclipse，NetBeans，IntelliJ IDEA 等）也有生成equals和hashCode方法的功能，但是生成的源代码比使用AutoValue框架的代码更冗长、可读性更差，不会自动跟踪类中的更改，因此需要进行测试。这就是说，使用IDE工具生成equals(和hashCode)方法通常比手动编写它们更可取，因为IDE工具不会犯粗心大意的错误，而人类则会。</p>
+<p>总之，除非必须：在很多情况下，不要重写equals方法，从Object继承的实现完全是你想要的。 如果你确实重写了equals 方法，那么一定要比较这个类的所有重要属性，并且以保护前面equals约定里五个规定的方式去比较。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/09/effective-java-cn-06-10/" class="article-date">
+  <time datetime="2018-05-09T01:24:43.000Z" itemprop="datePublished">2018-05-09</time>
+</a>
+
+        </li>
+        
+          <li>
+            <span class="label">Category:</span>
+            
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+
+          </li>
+        
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <a href="/2018/05/09/effective-java-cn-11-15/" id="article-nav-newer" class="article-nav-link-wrap newer">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Effective Java 中文版(item:11-15)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/09/effective-java-cn-01-05/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Effective Java 中文版(item:01-05)</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Effective Java 中文版(item:01-05) | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="条目1. 考虑使用静态工厂方法替代构造方法一个类允许客户端获取其实例的传统方式是提供一个公共构造方法。 其实还有另一种技术应该成为每个程序员工具箱的一部分。 一个类可以提供一个公共静态工厂方法，它只是一个返回类实例的静态方法。 下面是一个Boolean简单的例子（boolean基本类型的包装类）。 此方法将boolean基本类型转换为Boolean对象引用： 123public static Bo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java 中文版(item:01-05)">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/09/effective-java-cn-01-05/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="条目1. 考虑使用静态工厂方法替代构造方法一个类允许客户端获取其实例的传统方式是提供一个公共构造方法。 其实还有另一种技术应该成为每个程序员工具箱的一部分。 一个类可以提供一个公共静态工厂方法，它只是一个返回类实例的静态方法。 下面是一个Boolean简单的例子（boolean基本类型的包装类）。 此方法将boolean基本类型转换为Boolean对象引用： 123public static Bo">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-09T01:30:44.060Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java 中文版(item:01-05)">
+<meta name="twitter:description" content="条目1. 考虑使用静态工厂方法替代构造方法一个类允许客户端获取其实例的传统方式是提供一个公共构造方法。 其实还有另一种技术应该成为每个程序员工具箱的一部分。 一个类可以提供一个公共静态工厂方法，它只是一个返回类实例的静态方法。 下面是一个Boolean简单的例子（boolean基本类型的包装类）。 此方法将boolean基本类型转换为Boolean对象引用： 123public static Bo">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-effective-java-cn-01-05" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective Java 中文版(item:01-05)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <h2 id="条目1-考虑使用静态工厂方法替代构造方法"><a href="#条目1-考虑使用静态工厂方法替代构造方法" class="headerlink" title="条目1. 考虑使用静态工厂方法替代构造方法"></a>条目1. 考虑使用静态工厂方法替代构造方法</h2><p>一个类允许客户端获取其实例的传统方式是提供一个公共构造方法。 其实还有另一种技术应该成为每个程序员工具箱的一部分。 一个类可以提供一个公共静态工厂方法，它只是一个返回类实例的静态方法。 下面是一个<code>Boolean</code>简单的例子（<code>boolean</code>基本类型的包装类）。 此方法将<code>boolean</code>基本类型转换为<code>Boolean</code>对象引用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static Boolean valueOf(boolean b) &#123;</span><br><span class="line">    return b ? Boolean.TRUE : Boolean.FALSE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意，静态工厂方法与设计模式中的工厂方法模式不同[Gamma95]。本条目中描述的静态工厂方法在设计模式中没有直接的等价。</p>
+<p>类可以为其客户端提供静态工厂方法，而不是公共构造方法。提供静态工厂方法而不是公共构造方法有优点也有缺点。</p>
+<p><strong>静态工厂方法的一个优点是，不像构造方法，它们是有名字的。</strong> 如果构造方法的参数本身并不描述被返回的对象，则具有精心选择名称的静态工厂更易于使用，并且生成的客户端代码更易于阅读。 例如，返回一个可能为素数的<code>BigInteger</code>的构造方法<code>BigInteger(int，int，Random)</code>可以更好地表示为名为<code>BigInteger.probablePrime</code>的静态工厂方法。 （这个方法是在Java 1.4中添加的。）</p>
+<p>一个类只能有一个给定签名的构造方法。 程序员知道通过提供两个构造方法来解决这个限制，这两个构造方法的参数列表只有它们的参数类型的顺序不同。 这是一个非常糟糕的主意。 这样的API用户将永远不会记得哪个构造方法是哪个，最终会错误地调用。 阅读使用这些构造方法的代码的人只有在参考类文档的情况下才知道代码的作用。</p>
+<p>因为他们有名字，所以静态工厂方法不会受到上面讨论中的限制。在类中似乎需要具有相同签名的多个构造方法的情况下，用静态工厂方法替换构造方法，并仔细选择名称来突出它们的差异。</p>
+<p><strong>静态工厂方法的第二个优点是，与构造方法不同，它们不需要每次调用时都创建一个新对象。</strong>这允许不可变的类(条目17)使用预先构建的实例，或者在构造时缓存实例，并反复分配它们以避免创建不必要的重复对象。<code>boolean.valueof(boolean)</code>方法说明了这种方法：它从不创建对象。这种技术类似于Flyweight模式[Gamma95]。如果经常请求等价对象，那么它可以极大地提高性能，特别是如果在创建它们非常昂贵的情况下。</p>
+<p>静态工厂方法从重复调用返回相同对象的能力允许类保持在任何时候存在的实例的严格控制。这样做的类被称为实例控制（ instance-controlled）。编写实例控制类的原因有很多。实例控制允许一个类来保证它是一个单例(3)项或不可实例化的(条目4)。同时,它允许一个不可变的值类(条目17)保证不存在两个相同的实例：当且仅当<code>a== b</code>时<code>a.equals(b)</code>。这是享元模式的基础[Gamma95]。<code>Enum</code>类型(条目34)提供了这个保证。</p>
+<p><strong>静态工厂方法的第三个优点是，与构造方法不同，它们可以返回其返回类型的任何子类型的对象。</strong> 这为你在选择返回对象的类时提供了很大的灵活性。</p>
+<p>这种灵活性的一个应用是API可以返回对象而不需要公开它的类。 以这种方式隐藏实现类会使 API非常紧凑I。 这种技术适用于基于接口的框架（条目20），其中接口为静态工厂方法提供自然返回类型。</p>
+<p>在Java 8之前，接口不能有静态方法。根据约定，一个名为<code>Type</code>的接口的静态工厂方法被放入一个非实例化的伙伴类(companion class)(条目4)<code>Types</code>类中。例如，Java集合框架有45个接口的实用工具实现，提供不可修改的集合、同步集合等等。几乎所有这些实现都是通过静态工厂方法在一个非实例类(<code>java .util. collections</code>)中导出的。返回对象的类都是非公开的。</p>
+<p><code>Collections</code>框架API的规模要比它之前输出的45个单独的公共类要小得多，每个类有个便利类的实现。不仅是API的大部分减少了，还包括概念上的权重：程序员必须掌握的概念的数量和难度，才能使用API。程序员知道返回的对象恰好有其接口指定的API，因此不需要为实现类读阅读额外的类文档。此外，使用这种静态工厂方法需要客户端通过接口而不是实现类来引用返回的对象，这通常是良好的实践(条目64)。</p>
+<p>从Java 8开始，接口不能包含静态方法的限制被取消了，所以通常没有理由为接口提供一个不可实例化的伴随类。 很多公开的静态成员应该放在这个接口本身。 但是，请注意，将这些静态方法的大部分实现代码放在单独的包私有类中仍然是必要的。 这是因为Java 8要求所有接口的静态成员都是公共的。 Java 9允许私有静态方法，但静态字段和静态成员类仍然需要公开。</p>
+<p><strong>静态工厂的第四个优点是返回对象的类可以根据输入参数的不同而不同。</strong> 声明的返回类型的任何子类都是允许的。 返回对象的类也可以随每次发布而不同。</p>
+<p><code>EnumSet</code>类（条目 36）没有公共构造方法，只有静态工厂。 在OpenJDK实现中，它们根据底层枚举类型的大小返回两个子类中的一个的实例：如果大多数枚举类型具有64个或更少的元素，静态工厂将返回一个<code>RegularEnumSet</code>实例， 返回一个<code>long</code>类型；如果枚举类型具有六十五个或更多元素，则工厂将返回一个<code>JumboEnumSet</code>实例，返回一个<code>long</code>类型的数组。</p>
+<p>这两个实现类的存在对于客户是不可见的。 如果<code>RegularEnumSet</code>不再为小枚举类型提供性能优势，则可以在未来版本中将其淘汰，而不会产生任何不良影响。 同样，未来的版本可能会添加<code>EnumSet</code>的第三个或第四个实现，如果它证明有利于性能。 客户既不知道也不关心他们从工厂返回的对象的类别; 他们只关心它是<code>EnumSet</code>的一些子类。</p>
+<p><strong>静态工厂的第5个优点是，在编写包含该方法的类时，返回的对象的类不需要存在。</strong>这种灵活的静态工厂方法构成了服务提供者框架的基础，比如Java数据库连接API(JDBC)。服务提供者框架是提供者实现服务的系统，并且系统使得实现对客户端可用，从而将客户端从实现中分离出来。</p>
+<p>服务提供者框架中有三个基本组：服务接口，它表示实现；提供者注册API，提供者用来注册实现；以及服务访问API，客户端使用该API获取服务的实例。服务访问API允许客户指定选择实现的标准。在缺少这样的标准的情况下，API返回一个默认实现的实例，或者允许客户通过所有可用的实现进行遍历。服务访问API是灵活的静态工厂，它构成了服务提供者框架的基础。</p>
+<p>服务提供者框架的一个可选的第四个组件是一个服务提供者接口，它描述了一个生成服务接口实例的工厂对象。在没有服务提供者接口的情况下，必须对实现进行反射实例化(条目65)。在JDBC的情况下，<code>Connection</code>扮演服务接口的一部分，<code>DriverManager.registerDriver</code>提供程序注册API、<code>DriverManager.getConnection</code>是服务访问API，<code>Driver</code>是服务提供者接口。</p>
+<p>服务提供者框架模式有许多变种。 例如，服务访问API可以向客户端返回比提供者提供的更丰富的服务接口。 这是桥接模式[Gamma95]。 依赖注入框架（条目5）可以被看作是强大的服务提供者。 从Java 6开始，平台包含一个通用的服务提供者框架<code>java.util.ServiceLoader</code>，所以你不需要，一般也不应该自己编写（条目59）。 JDBC不使用<code>ServiceLoader</code>，因为前者早于后者。</p>
+<p><strong>只提供静态工厂方法的主要限制是，没有公共或受保护构造方法的类不能被子类化。</strong>例如，在<code>Collections</code>框架中不可能将任何方便实现类子类化。可以说，这可能是因祸得福，因为它鼓励程序员使用组合而不是继承(条目18)，并且是不可变类型(条目17)。</p>
+<p><strong>静态工厂方法的第二个缺点是，程序员很难找到它们。</strong>它们不像构造方法那样在API文档中突出，因此很难找出如何实例化一个提供静态工厂方法而不是构造方法的类。Javadoc工具可能有一天会引起对静态工厂方法的注意。与此同时，可以通过将注意力吸引到类或接口文档中的静态工厂以及遵守通用的命名约定来减少这个问题。下面是一些静态工厂方法的常用名称。以下清单并非完整：</p>
+<ul>
+<li>from——A类型转换方法，它接受单个参数并返回此类型的相应实例，例如：<code>Date d = Date.from(instant)</code>;</li>
+<li>of——一个聚合方法，接受多个参数并返回该类型的实例，并把他们合并在一起，例如：<code>Set&lt;Rank&gt; faceCards = EnumSet.of(JACK, QUEEN, KING)</code>;</li>
+<li>valueOf——from和to更为详细的替代 方式，例如：<code>BigInteger prime = BigInteger.valueOf(Integer.MAX_VALUE)</code>;</li>
+<li>instance或getinstance——返回一个由其参数(如果有的话)描述的实例，但不能说它具有相同的值，例如：<code>StackWalker luke = StackWalker.getInstance(options)</code>;</li>
+<li>create 或 newInstance——与instance 或 getInstance类似，除了该方法保证每个调用返回一个新的实例，例如：<code>Object newArray = Array.newInstance(classObject, arrayLen)</code>;</li>
+<li>getType——与getInstance类似，但是如果在工厂方法中不同的类中使用。Type是工厂方法返回的对象类型，例如：<code>FileStore fs = Files.getFileStore(path)</code>;</li>
+<li>newType——与newInstance类似，但是如果在工厂方法中不同的类中使用。Type是工厂方法返回的对象类型，例如：<code>BufferedReader br = Files.newBufferedReader(path)</code>;</li>
+<li>type—— getType 和 newType简洁的替代方式，例如：<code>List&lt;Complaint&gt; litany = Collections.list(legacyLitany)</code>;</li>
+</ul>
+<p>总之，静态工厂方法和公共构造方法都有它们的用途，并且了解它们的相对优点是值得的。通常，静态工厂更可取，因此避免在没有考虑静态工厂的情况下提供公共构造方法。</p>
+<h2 id="条目2：当构造方法参数过多时使用builder模式"><a href="#条目2：当构造方法参数过多时使用builder模式" class="headerlink" title="条目2：当构造方法参数过多时使用builder模式"></a>条目2：当构造方法参数过多时使用builder模式</h2><p>静态工厂和构造方法都有一个限制：它们不能很好地扩展到很多可选参数的情景。请考虑一个代表包装食品上的营养成分标签的例子。这些标签有几个必需的属性——每次建议的摄入量，每罐的份量和每份卡路里 ，以及超过20个可选的属性——总脂肪、饱和脂肪、反式脂肪、胆固醇、钠等等。大多数产品都有非零值，只有少数几个可选属性。</p>
+<p>应该为这样的类编写什么样的构造方法或静态工厂？传统上，程序员使用了可伸缩（telescoping constructor）构造方法模式，在这种模式中，只提供了一个只所需参数的构造函数，另一个只有一个可选参数，第三个有两个可选参数，等等，最终在构造函数中包含所有可选参数。这就是它在实践中的样子。为了简便起见，只显示了四个可选属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">// Telescoping constructor pattern - does not scale well!</span><br><span class="line"></span><br><span class="line">public class NutritionFacts &#123;</span><br><span class="line">    private final int servingSize;  // (mL)            required</span><br><span class="line">    private final int servings;     // (per container) required</span><br><span class="line">    private final int calories;     // (per serving)   optional</span><br><span class="line">    private final int fat;          // (g/serving)     optional</span><br><span class="line">    private final int sodium;       // (mg/serving)    optional</span><br><span class="line">    private final int carbohydrate; // (g/serving)     optional</span><br><span class="line"></span><br><span class="line">    public NutritionFacts(int servingSize, int servings) &#123;</span><br><span class="line">        this(servingSize, servings, 0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public NutritionFacts(int servingSize, int servings,</span><br><span class="line">            int calories) &#123;</span><br><span class="line">        this(servingSize, servings, calories, 0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public NutritionFacts(int servingSize, int servings,</span><br><span class="line">            int calories, int fat) &#123;</span><br><span class="line">        this(servingSize, servings, calories, fat, 0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public NutritionFacts(int servingSize, int servings,</span><br><span class="line">            int calories, int fat, int sodium) &#123;</span><br><span class="line">        this(servingSize, servings, calories, fat, sodium, 0);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public NutritionFacts(int servingSize, int servings,</span><br><span class="line">           int calories, int fat, int sodium, int carbohydrate) &#123;</span><br><span class="line">        this.servingSize  = servingSize;</span><br><span class="line">        this.servings     = servings;</span><br><span class="line">        this.calories     = calories;</span><br><span class="line">        this.fat          = fat;</span><br><span class="line">        this.sodium       = sodium;</span><br><span class="line">        this.carbohydrate = carbohydrate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当想要创建一个实例时，可以使用包含所有要设置的参数的最短参数列表的构造方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NutritionFacts cocaCola = new NutritionFacts(240, 8, 100, 0, 35, 27);</span><br></pre></td></tr></table></figure>
+<p>通常情况下，这个构造方法的调用需要许多你不想设置的参数，但是你不得不为它们传递一个值。 在这种情况下，我们为<code>fat</code>属性传递了0值。 『只有』六个参数可能看起来并不那么糟糕，但随着参数数量的增加，它会很快失控。</p>
+<p>简而言之，可伸缩构造方法模式是有效的，但是当有很多参数时，很难编写客户端代码，而且很难读懂它。读者不知道这些值是什么意思，并且必须仔细地计算参数才能找到答案。一长串相同类型的参数可能会导致一些细微的bug。如果客户端意外地反转了两个这样的参数，编译器并不会抱怨，但是程序在运行时会出现错误行为(条目51)。</p>
+<p>当在构造方法中遇到许多可选参数时，另一种选择是JavaBeans模式，在这种模式中，调用一个无参数的构造函数来创建对象，然后调用setter方法来设置每个必需的参数和可选参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// JavaBeans Pattern - allows inconsistency, mandates mutability</span><br><span class="line"></span><br><span class="line">public class NutritionFacts &#123;</span><br><span class="line">    // Parameters initialized to default values (if any)</span><br><span class="line">    private int servingSize  = -1; // Required; no default value</span><br><span class="line">    private int servings     = -1; // Required; no default value</span><br><span class="line">    private int calories     = 0;</span><br><span class="line">    private int fat          = 0;</span><br><span class="line">    private int sodium       = 0;</span><br><span class="line">    private int carbohydrate = 0;</span><br><span class="line"></span><br><span class="line">    public NutritionFacts() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    // Setters</span><br><span class="line">    public void setServingSize(int val)  &#123; servingSize = val; &#125;</span><br><span class="line">    public void setServings(int val)    &#123; servings = val; &#125;</span><br><span class="line">    public void setCalories(int val)    &#123; calories = val; &#125;</span><br><span class="line">    public void setFat(int val)         &#123; fat = val; &#125;</span><br><span class="line">    public void setSodium(int val)      &#123; sodium = val; &#125;</span><br><span class="line">    public void setCarbohydrate(int val) &#123; carbohydrate = val; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种模式没有伸缩构造方法模式的缺点。有点冗长，但创建实例很容易，并且易于阅读所生成的代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">NutritionFacts cocaCola = new NutritionFacts();</span><br><span class="line">cocaCola.setServingSize(240);</span><br><span class="line">cocaCola.setServings(8);</span><br><span class="line">cocaCola.setCalories(100);</span><br><span class="line">cocaCola.setSodium(35);</span><br><span class="line">cocaCola.setCarbohydrate(27);</span><br></pre></td></tr></table></figure>
+<p>不幸的是，JavaBeans模式本身有严重的缺陷。由于构造方法在多次调用中被分割，所以在构造过程中JavaBean可能处于不一致的状态。该类没有通过检查构造参数参数的有效性来执行一致性的选项。在不一致的状态下尝试使用对象可能会导致与包含bug的代码大相径庭的错误，因此很难调试。一个相关的缺点是，JavaBeans模式排除了让类不可变的可能性(条目17)，并且需要在程序员的部分增加工作以确保线程安全。</p>
+<p>当它的构造完成时，手动“冻结”对象，并且不允许它在解冻之前使用，可以减少这些缺点，但是这种变体在实践中很难使用并且很少使用。 而且，在运行时会导致错误，因为编译器无法确保程序员在使用对象之前调用<code>freeze</code>方法。</p>
+<p>幸运的是，还有第三种选择，它结合了可伸缩构造方法模式的安全性和javabean模式的可读性。 它是Builder模式[Gamma95]的一种形式。客户端不直接调用所需的对象，而是调用构造方法(或静态工厂)，并使用所有必需的参数，并获得一个builder对象。然后，客户端调用builder对象的<code>setter</code>相似方法来设置每个可选参数。最后，客户端调用一个无参的<code>build</code>方法来生成对象，该对象通常是不可变的。Builder通常是它所构建的类的一个静态成员类(条目24)。以下是它在实践中的示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">// Builder Pattern</span><br><span class="line"></span><br><span class="line">public class NutritionFacts &#123;</span><br><span class="line">    private final int servingSize;</span><br><span class="line">    private final int servings;</span><br><span class="line">    private final int calories;</span><br><span class="line">    private final int fat;</span><br><span class="line">    private final int sodium;</span><br><span class="line">    private final int carbohydrate;</span><br><span class="line"></span><br><span class="line">    public static class Builder &#123;</span><br><span class="line">        // Required parameters</span><br><span class="line">        private final int servingSize;</span><br><span class="line">        private final int servings;</span><br><span class="line"></span><br><span class="line">        // Optional parameters - initialized to default values</span><br><span class="line">        private int calories      = 0;</span><br><span class="line">        private int fat           = 0;</span><br><span class="line">        private int sodium        = 0;</span><br><span class="line">        private int carbohydrate  = 0;</span><br><span class="line"></span><br><span class="line">        public Builder(int servingSize, int servings) &#123;</span><br><span class="line">            this.servingSize = servingSize;</span><br><span class="line">            this.servings    = servings;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Builder calories(int val) &#123; </span><br><span class="line">            calories = val;      </span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Builder fat(int val) &#123; </span><br><span class="line">           fat = val;           </span><br><span class="line">           return this;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Builder sodium(int val) &#123; </span><br><span class="line">           sodium = val;        </span><br><span class="line">           return this; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public Builder carbohydrate(int val) &#123; </span><br><span class="line">           carbohydrate = val;  </span><br><span class="line">           return this; </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public NutritionFacts build() &#123;</span><br><span class="line">            return new NutritionFacts(this);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private NutritionFacts(Builder builder) &#123;</span><br><span class="line">        servingSize  = builder.servingSize;</span><br><span class="line">        servings     = builder.servings;</span><br><span class="line">        calories     = builder.calories;</span><br><span class="line">        fat          = builder.fat;</span><br><span class="line">        sodium       = builder.sodium;</span><br><span class="line">        carbohydrate = builder.carbohydrate;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>NutritionFacts</code>类是不可变的，所有的参数默认值都在一个地方。builder的setter方法返回builder本身，这样调用就可以被链接起来，从而生成一个流畅的API。下面是客户端代码的示例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NutritionFacts cocaCola = new NutritionFacts.Builder(240, 8)</span><br><span class="line">    .calories(100).sodium(35).carbohydrate(27).build();</span><br></pre></td></tr></table></figure>
+<p>这个客户端代码很容易编写，更重要的是易于阅读。 Builder模式模拟Python和Scala中的命名可选参数。</p>
+<p>为了简洁起见，省略了有效性检查。 要尽快检测无效参数，检查builder的构造方法和方法中的参数有效性。 在<code>build</code>方法调用的构造方法中检查包含多个参数的不变性。为了确保这些不变性不受攻击，在从builder复制参数后对对象属性进行检查（条目 50）。 如果检查失败，则抛出<code>IllegalArgumentException</code>异常（条目 72），其详细消息指示哪些参数无效（条目 75）。</p>
+<p>Builder模式非常适合类层次结构。 使用平行层次的builder，每个嵌套在相应的类中。 抽象类有抽象的builder; 具体的类有具体的builder。 例如，考虑代表各种比萨饼的根层次结构的抽象类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// Builder pattern for class hierarchies</span><br><span class="line"></span><br><span class="line">import java.util.EnumSet;</span><br><span class="line">import java.util.Objects;</span><br><span class="line">import java.util.Set;</span><br><span class="line"></span><br><span class="line">public abstract class Pizza &#123;</span><br><span class="line">    public enum Topping &#123;HAM, MUSHROOM, ONION, PEPPER, SAUSAGE&#125;</span><br><span class="line">    final Set&lt;Topping&gt; toppings;</span><br><span class="line">    </span><br><span class="line">    abstract static class Builder&lt;T extends Builder&lt;T&gt;&gt; &#123;</span><br><span class="line">        EnumSet&lt;Topping&gt; toppings = EnumSet.noneOf(Topping.class);</span><br><span class="line"></span><br><span class="line">        public T addTopping(Topping topping) &#123;</span><br><span class="line">            toppings.add(Objects.requireNonNull(topping));</span><br><span class="line">            return self();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        abstract Pizza build();</span><br><span class="line">        </span><br><span class="line">        // Subclasses must override this method to return &quot;this&quot;</span><br><span class="line">        protected abstract T self();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Pizza(Builder&lt;?&gt; builder) &#123;</span><br><span class="line">        toppings = builder.toppings.clone(); // See Item 50</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，<code>Pizza.Builder</code>是一个带有递归类型参数（ recursive type parameter）（条目 30）的泛型类型。 这与抽象的<code>self</code>方法一起，允许方法链在子类中正常工作，而不需要强制转换。 Java缺乏自我类型的这种变通解决方法被称为模拟自我类型（simulated self-type）的习惯用法。</p>
+<p>这里有两个具体的<code>Pizza</code>的子类，其中一个代表标准的纽约风格的披萨，另一个是半圆形烤乳酪馅饼。前者有一个所需的尺寸参数，而后者则允许指定酱汁是否应该在里面或在外面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">import java.util.Objects;</span><br><span class="line"></span><br><span class="line">public class NyPizza extends Pizza &#123;</span><br><span class="line">    public enum Size &#123; SMALL, MEDIUM, LARGE &#125;</span><br><span class="line">    private final Size size;</span><br><span class="line"></span><br><span class="line">    public static class Builder extends Pizza.Builder&lt;Builder&gt; &#123;</span><br><span class="line">        private final Size size;</span><br><span class="line"></span><br><span class="line">        public Builder(Size size) &#123;</span><br><span class="line">            this.size = Objects.requireNonNull(size);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override public NyPizza build() &#123;</span><br><span class="line">            return new NyPizza(this);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override protected Builder self() &#123;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private NyPizza(Builder builder) &#123;</span><br><span class="line">        super(builder);</span><br><span class="line">        size = builder.size;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public class Calzone extends Pizza &#123;</span><br><span class="line">    private final boolean sauceInside;</span><br><span class="line">    </span><br><span class="line">    public static class Builder extends Pizza.Builder&lt;Builder&gt; &#123;</span><br><span class="line">        private boolean sauceInside = false; // Default</span><br><span class="line"></span><br><span class="line">        public Builder sauceInside() &#123;</span><br><span class="line">            sauceInside = true;</span><br><span class="line">            return this;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        @Override public Calzone build() &#123;</span><br><span class="line">            return new Calzone(this);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        @Override protected Builder self() &#123;</span><br><span class="line">            return this; </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    private Calzone(Builder builder) &#123;</span><br><span class="line">        super(builder);</span><br><span class="line">        sauceInside = builder.sauceInside;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，每个子类builder中的<code>build</code>方法被声明为返回正确的子类：<code>NyPizza.Builder</code>的<code>build</code>方法返回<code>NyPizza</code>，而<code>Calzone.Builder</code>中的<code>build</code>方法返回<code>Calzone</code>。 这种技术，其一个子类的方法被声明为返回在超类中声明的返回类型的子类型，称为协变返回类型( covariant return typing)。 它允许客户端使用这些builder，而不需要强制转换。</p>
+<p>这些“分层builder”的客户端代码基本上与简单的<code>NutritionFacts</code> builder的代码相同。为了简洁起见,下面显示的示例客户端代码假设枚举常量的静态导入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">NyPizza pizza = new NyPizza.Builder(SMALL)</span><br><span class="line">        .addTopping(SAUSAGE).addTopping(ONION).build();</span><br><span class="line">Calzone calzone = new Calzone.Builder()</span><br><span class="line">        .addTopping(HAM).sauceInside().build();</span><br></pre></td></tr></table></figure>
+<p>builder对构造方法的一个微小的优势是，builder可以有多个可变参数，因为每个参数都是在它自己的方法中指定的。或者，builder可以将传递给多个调用的参数聚合到单个属性中，如前面的<code>addTopping</code>方法所演示的那样。</p>
+<p>Builder模式非常灵活。 单个builder可以重复使用来构建多个对象。 builder的参数可以在构建方法的调用之间进行调整，以改变创建的对象。 builder可以在创建对象时自动填充一些属性，例如每次创建对象时增加的序列号。</p>
+<p>Builder模式也有缺点。为了创建对象，首先必须创建它的builder。虽然创建这个builder的成本在实践中不太可能被注意到，但在性能关键的情况下可能会出现问题。而且，builder模式比伸缩构造方法模式更冗长，因此只有在有足够的参数时才值得使用它，比如四个或更多。但是请记住，如果希望在将来添加更多的参数。但是，如果从构造方法或静态工厂开始，并切换到builder，当类演化到参数数量失控的时候，过时的构造方法或静态工厂就会面临尴尬的处境。因此，所以，最好从一开始就创建一个builder。</p>
+<p>总而言之，当设计类的构造方法或静态工厂的参数超过几个时，Builder模式是一个不错的选择，特别是如果许多参数是可选的或相同类型的。客户端代码比使用伸缩构造方法（telescoping constructors）更容易读写，并且builder比JavaBeans更安全。</p>
+<h2 id="3-使用私有构造方法或枚类实现Singleton属性"><a href="#3-使用私有构造方法或枚类实现Singleton属性" class="headerlink" title="3. 使用私有构造方法或枚类实现Singleton属性"></a>3. 使用私有构造方法或枚类实现Singleton属性</h2><p>单例是一个仅实例化一次的类[Gamma95]。单例对象通常表示无状态对象，如函数(条目 24)或一个本质上唯一的系统组件。让一个类成为单例会使测试它的客户变得困难，因为除非实现一个作为它类型的接口，否则不可能用一个模拟实现替代单例。</p>
+<p>有两种常见的方法来实现单例。两者都基于保持构造方法私有和导出公共静态成员以提供对唯一实例的访问。在第一种方法中，成员是<code>final</code>修饰的属性：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Singleton with public final field</span><br><span class="line">public class Elvis &#123;</span><br><span class="line">    public static final Elvis INSTANCE = new Elvis();</span><br><span class="line">    private Elvis() &#123; ... &#125;</span><br><span class="line">    public void leaveTheBuilding() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>私有构造方法只调用一次，来初始化公共静态 final <code>Elvis.INSTANCE</code>属性。缺少一个公共的或受保护的构造方法，保证了全局的唯一性：一旦Elvis类被初始化，一个Elvis的实例就会存在——不多也不少。客户端所做的任何事情都不能改变这一点，但需要注意的是：特权客户端可以使用<code>AccessibleObject.setAccessible</code>方法，以反射方式调用私有构造方法(条目 65)。如果需要防御此攻击，请修改构造函数，使其在请求创建第二个实例时抛出异常。</p>
+<p>在第二个实现单例的方法中，公共成员是一个静态的工厂方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Singleton with static factory</span><br><span class="line">public class Elvis &#123;</span><br><span class="line">    private static final Elvis INSTANCE = new Elvis();</span><br><span class="line">    private Elvis() &#123; ... &#125;</span><br><span class="line">    public static Elvis getInstance() &#123; return INSTANCE; &#125;</span><br><span class="line"></span><br><span class="line">    public void leaveTheBuilding() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所有对<code>Elvis.getInstance</code>的调用都返回相同的对象引用，并且不会创建其他的Elvis实例（与前面提到的警告相同）。</p>
+<p>公共属性方法的主要优点是API明确表示该类是一个单例：公共静态属性是final的，所以它总是包含相同的对象引用。 第二个好处是它更简单。</p>
+<p>静态工厂方法的一个优点是，它可以灵活地改变你的想法，无论该类是否为单例而不必更改其API。 工厂方法返回唯一的实例，但是可以修改，比如，返回调用它的每个线程的单独实例。 第二个好处是，如果你的应用程序需要它，可以编写一个泛型单例工厂（generic singleton factory ）（条目30）。 使用静态工厂的最后一个优点是方法引用可以用<code>supplier</code>，例如<code>Elvis :: instance</code>等同于<code>Supplier&lt;Elvis&gt;</code>。 除非与这些优点相关的，否则公共属性方法是可取的。</p>
+<p>创建一个使用这两种方法的单例类(第12章)，仅仅将<code>implements Serializable</code>添加到声明中是不够的。为了维护单例的保证，声明所有的实例属性为<code>transient</code>，并提供一个<code>readResolve</code>方法(条目89)。否则，每当序列化实例被反序列化时，就会创建一个新的实例，在我们的例子中，导致出现新的Elvis实例。为了防止这种情况发生，将这个<code>readResolve</code>方法添加到Elvis类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// readResolve method to preserve singleton property</span><br><span class="line">private Object readResolve() &#123;</span><br><span class="line">     // Return the one true Elvis and let the garbage collector</span><br><span class="line">     // take care of the Elvis impersonator.</span><br><span class="line">    return INSTANCE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>实现一个单例的第三种方法是声明单一元素的枚举类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Enum singleton - the preferred approach</span><br><span class="line">public enum Elvis &#123;</span><br><span class="line">    INSTANCE;</span><br><span class="line"></span><br><span class="line">    public void leaveTheBuilding() &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式类似于公共属性方法，但更简洁，提供了免费的序列化机制，并提供了针对多个实例化的坚固保证，即使是在复杂的序列化或反射攻击的情况下。这种方法可能感觉有点不自然，但是<strong>单一元素枚举类通常是实现单例的最佳方式</strong>。注意，如果单例必须继承<code>Enum</code>以外的父类(尽管可以声明一个<code>Enum</code>来实现接口)，那么就不能使用这种方法。</p>
+<h2 id="4-使用私有构造方法执行非实例化"><a href="#4-使用私有构造方法执行非实例化" class="headerlink" title="4. 使用私有构造方法执行非实例化"></a>4. 使用私有构造方法执行非实例化</h2><p>偶尔你会想写一个类，它只是一组静态方法和静态属性。 这样的类获得了不好的名声，因为有些人滥用这些类而避免以面向对象方式思考，但是它们确实有着特殊的用途。 它们可以用来按照<code>java.lang.Math</code>或<code>java.util.Arrays</code>的方式，在基本类型的数值或数组上组织相关的方法。 它们也可以用于将静态方法（包括工厂（条目 1））分组，用于实现某个接口的对象，其方式为<code>java.util.Collections</code>。 （从Java 8开始，你也可以将这些方法放在接口中，假如它是你自己修改的。）最后，这样的类可以用于在final类上对方法进行分组，因为不能将它们放在子类中。</p>
+<p>这样的实用类（ utility classes）不是设计用来被实例化的：一个实例是没有意义的。然而，在没有显式构造方法的情况下，编译器提供了一个公共的、无参的默认构造方法。对于用户来说，该构造方法与其他构造方法没有什么区别。在已发布的 API中经常看到无意识的被实例的类。</p>
+<p><strong>试图通过创建抽象类来强制执行非实例化是行不通的。</strong>该类可以被子类化，子类可以被实例化。此外，它误导用户认为该类是为继承而设计的(条目 19)。不过，有一个简单的方法来确保非实例化。只有当类不包含显式构造方法时，才会生成一个默认构造方法，<strong>因此可以通过包含一个私有构造方法来实现类的非实例化：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Noninstantiable utility class</span><br><span class="line">public class UtilityClass &#123;</span><br><span class="line">    // Suppress default constructor for noninstantiability</span><br><span class="line">    private UtilityClass() &#123;</span><br><span class="line">        throw new AssertionError();</span><br><span class="line">    &#125;</span><br><span class="line">    ... // Remainder omitted</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>因为显式构造方法是私有的，所以在类之外是不可访问的。<code>AssertionError</code>异常不是严格要求的，但是它提供了一种保证，以防在类中意外地调用构造方法。它保证类在任何情况下都不会被实例化。这个习惯用法有点违反直觉，好像构造方法就是设计成不能调用的一样。因此，如前面所示，添加注释是种明智的做法。</p>
+<p>这种习惯有一个副作用，阻止了类的子类化。所有的构造方法都必须显式或隐式地调用父类构造方法，而子类则没有可访问的父类构造方法来调用。</p>
+<h2 id="5-使用依赖注入取代硬连接资源（hardwiring-resources）"><a href="#5-使用依赖注入取代硬连接资源（hardwiring-resources）" class="headerlink" title="5. 使用依赖注入取代硬连接资源（hardwiring resources）"></a>5. 使用依赖注入取代硬连接资源（hardwiring resources）</h2><p>许多类依赖于一个或多个底层资源。例如，拼写检查器依赖于字典。将此类类实现为静态实用工具类并不少见(条目 4):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// Inappropriate use of static utility - inflexible &amp; untestable!</span><br><span class="line">public class SpellChecker &#123;</span><br><span class="line">    private static final Lexicon dictionary = ...;</span><br><span class="line"></span><br><span class="line">    private SpellChecker() &#123;&#125; // Noninstantiable</span><br><span class="line"></span><br><span class="line">    public static boolean isValid(String word) &#123; ... &#125;</span><br><span class="line">    public static List&lt;String&gt; suggestions(String typo) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同样地，将它们实现为单例也并不少见(条目 3)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Inappropriate use of singleton - inflexible &amp; untestable!</span><br><span class="line">public class SpellChecker &#123;</span><br><span class="line">    private final Lexicon dictionary = ...;</span><br><span class="line"></span><br><span class="line">    private SpellChecker(...) &#123;&#125;</span><br><span class="line">    public static INSTANCE = new SpellChecker(...);</span><br><span class="line"></span><br><span class="line">    public boolean isValid(String word) &#123; ... &#125;</span><br><span class="line">    public List&lt;String&gt; suggestions(String typo) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这两种方法都不令人满意，因为他们假设只有一本字典值得使用。在实际中，每种语言都有自己的字典，特殊的字典被用于特殊的词汇表。另外，使用专门的字典来进行测试也是可取的。想当然地认为一本字典就足够了，这是一厢情愿的想法。</p>
+<p>可以通过使<code>dictionary</code>属性设置为非<code>final</code>，并添加一个方法来更改现有拼写检查器中的字典，从而让拼写检查器支持多个字典，但是在并发环境中，这是笨拙的、容易出错的和不可行的。<strong>静态实用类和单例对于那些行为被底层资源参数化的类来说是不合适的</strong>。</p>
+<p>所需要的是能够支持类的多个实例(在我们的示例中，即<code>SpellChecker</code>)，每个实例都使用客户端所期望的资源(在我们的例子中是<code>dictionary</code>)。满足这一需求的简单模式是在创建新实例时将资源传递到构造方法中。这是依赖项注入（dependency injection）的一种形式：字典是拼写检查器的一个依赖项，当它创建时被注入到拼写检查器中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Dependency injection provides flexibility and testability</span><br><span class="line">public class SpellChecker &#123;</span><br><span class="line">    private final Lexicon dictionary;</span><br><span class="line"></span><br><span class="line">    public SpellChecker(Lexicon dictionary) &#123;</span><br><span class="line">        this.dictionary = Objects.requireNonNull(dictionary);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean isValid(String word) &#123; ... &#125;</span><br><span class="line">    public List&lt;String&gt; suggestions(String typo) &#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>依赖注入模式非常简单，许多程序员使用它多年而不知道它有一个名字。 虽然我们的拼写检查器的例子只有一个资源（字典），但是依赖项注入可以使用任意数量的资源和任意依赖图。 它保持了不变性（条目 17），因此多个客户端可以共享依赖对象（假设客户需要相同的底层资源）。 依赖注入同样适用于构造方法，静态工厂（条目 1）和 builder模式（条目 2）。</p>
+<p>该模式的一个有用的变体是将资源工厂传递给构造方法。 工厂是可以重复调用以创建类型实例的对象。 这种工厂体现了工厂方法模式（Factory Method pattern ）[Gamma95]。 Java 8中引入的<code>Supplier &lt;T&gt;</code>接口非常适合代表工厂。 在输入上采用<code>Supplier&lt;T&gt;</code>的方法通常应该使用有界的通配符类型( bounded wildcard type)（条目 31）约束工厂的类型参数，以允许客户端传入工厂，创建指定类型的任何子类型。 例如，下面是一个使用客户端提供的工厂生成tile的方法：<br><code>Mosaic create(Supplier&lt;? extends Tile&gt; tileFactory) { ... }</code></p>
+<p>尽管依赖注入极大地提高了灵活性和可测试性，但它可能使大型项目变得混乱，这些项目通常包含数千个依赖项。使用依赖注入框架(如Dagger[Dagger]、Guice[Guice]或Spring[Spring])可以消除这些混乱。这些框架的使用超出了本书的范围，但是请注意，为手动依赖注入而设计的API非常适合这些框架的使用。</p>
+<p>总之，不要使用单例或静态的实用类来实现一个类，该类依赖于一个或多个底层资源，这些资源的行为会影响类的行为，并且不让类直接创建这些资源。相反，将资源或工厂传递给构造方法(或静态工厂或builder模式)。这种称为依赖注入的实践将极大地增强类的灵活性、可重用性和可测试性。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/09/effective-java-cn-01-05/" class="article-date">
+  <time datetime="2018-05-09T01:24:33.000Z" itemprop="datePublished">2018-05-09</time>
+</a>
+
+        </li>
+        
+          <li>
+            <span class="label">Category:</span>
+            
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+
+          </li>
+        
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <a href="/2018/05/09/effective-java-cn-06-10/" id="article-nav-newer" class="article-nav-link-wrap newer">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Effective Java中文版(item:06-10)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/09/effective-java-cn-01/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Effective Java 中文版(item:1-37)</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>

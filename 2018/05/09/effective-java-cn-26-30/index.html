@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>Effective Java 中文版(item:26-30) | 员外在减肥</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="26. 不要使用原始类型首先，有几个术语。一个类或接口，它的声明有一个或多个类型参数（ type parameters ），被称之为泛型类或泛型接口[JLS，8.1.2,9.1.2]。 例如，List接口具有单个类型参数E，表示其元素类型。 接口的全名是List&amp;lt;E&amp;gt;（读作“E”的列表），但是人们经常称它为List。 泛型类和接口统称为泛型类型（generic types）。 每个泛型">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java 中文版(item:26-30)">
+<meta property="og:url" content="http://luxiangdong.com/2018/05/09/effective-java-cn-26-30/index.html">
+<meta property="og:site_name" content="员外在减肥">
+<meta property="og:description" content="26. 不要使用原始类型首先，有几个术语。一个类或接口，它的声明有一个或多个类型参数（ type parameters ），被称之为泛型类或泛型接口[JLS，8.1.2,9.1.2]。 例如，List接口具有单个类型参数E，表示其元素类型。 接口的全名是List&amp;lt;E&amp;gt;（读作“E”的列表），但是人们经常称它为List。 泛型类和接口统称为泛型类型（generic types）。 每个泛型">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-05-09T03:04:56.414Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java 中文版(item:26-30)">
+<meta name="twitter:description" content="26. 不要使用原始类型首先，有几个术语。一个类或接口，它的声明有一个或多个类型参数（ type parameters ），被称之为泛型类或泛型接口[JLS，8.1.2,9.1.2]。 例如，List接口具有单个类型参数E，表示其元素类型。 接口的全名是List&amp;lt;E&amp;gt;（读作“E”的列表），但是人们经常称它为List。 泛型类和接口统称为泛型类型（generic types）。 每个泛型">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/typing.css">
+  <link rel="stylesheet" href="/css/donate.css">
+  
+</head>
+
+  
+    
+      <body>
+    
+  
+      <div id="container" class="container">
+        <article id="post-effective-java-cn-26-30" class="article article-type-post" itemscope itemprop="blogPost">
+  <header id="header" class="header">
+    <div class="mobile-nav">
+      <h1 class="nickname">员外在减肥</h1>
+      <a id="menu">
+        &#9776; Menu
+      </a>
+    </div>
+    
+        <nav id="main-nav" class="main-nav">
+    
+    
+      <a class="main-nav-link" href="/">首页</a>
+    
+      <a class="main-nav-link" href="/archives">文章</a>
+    
+      <a class="main-nav-link" href="/categories">分类</a>
+    
+      <a class="main-nav-link" href="/about">关于</a>
+    
+  </nav>
+</header>
+
+  <hr/>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Effective Java 中文版(item:26-30)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry typo" itemprop="articleBody">
+      
+        <h2 id="26-不要使用原始类型"><a href="#26-不要使用原始类型" class="headerlink" title="26. 不要使用原始类型"></a>26. 不要使用原始类型</h2><p>首先，有几个术语。一个类或接口，它的声明有一个或多个类型参数（ type parameters ），被称之为泛型类或泛型接口[JLS，8.1.2,9.1.2]。 例如，List接口具有单个类型参数E，表示其元素类型。 接口的全名是<code>List&lt;E&gt;</code>（读作“E”的列表），但是人们经常称它为List。 泛型类和接口统称为泛型类型（generic types）。</p>
+<p>每个泛型定义了一组参数化类型（parameterized types），它们由类或接口名称组成，后跟一个与泛型类型的形式类型参数[JLS，4.4,4.5]相对应的实际类型参数的尖括号“&lt;&gt;”列表。 例如，<code>List&lt;String&gt;</code>（读作“字符串列表”）是一个参数化类型，表示其元素类型为String的列表。 （String是与形式类型参数E相对应的实际类型参数）。</p>
+<p>最后，每个泛型定义了一个原始类型（ raw type），它是没有任何类型参数的泛型类型的名称[JLS，4.8]。 例如，对应于<code>List&lt;E&gt;</code>的原始类型是List。 原始类型的行为就像所有的泛型类型信息都从类型声明中被清除一样。 它们的存在主要是为了与没有泛型之前的代码相兼容。</p>
+<p>在泛型被添加到Java之前，这是一个典型的集合声明。 从Java 9开始，它仍然是合法的，但并不是典型的声明方式了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Raw collection type - don&apos;t do this!</span><br><span class="line"></span><br><span class="line">// My stamp collection. Contains only Stamp instances.</span><br><span class="line">private final Collection stamps = ... ;</span><br></pre></td></tr></table></figure>
+<p>如果你今天使用这个声明，然后不小心把coin实例放入你的stamp集合中，错误的插入编译和运行没有错误（尽管编译器发出一个模糊的警告）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Erroneous insertion of coin into stamp collection</span><br><span class="line">stamps.add(new Coin( ... )); // Emits &quot;unchecked call&quot; warning</span><br></pre></td></tr></table></figure>
+<p>直到您尝试从stamp集合中检索coin实例时才会发生错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// Raw iterator type - don&apos;t do this!</span><br><span class="line">for (Iterator i = stamps.iterator(); i.hasNext(); )</span><br><span class="line">    Stamp stamp = (Stamp) i.next(); // Throws ClassCastException</span><br><span class="line">        stamp.cancel();</span><br></pre></td></tr></table></figure>
+<p>正如本书所提到的，在编译完成之后尽快发现错误是值得的，理想情况是在编译时。 在这种情况下，直到运行时才发现错误，在错误发生后的很长一段时间，以及可能远离包含错误的代码的代码中。 一旦看到ClassCastException，就必须搜索代码类库，查找将coin实例放入stamp集合的方法调用。 编译器不能帮助你，因为它不能理解那个说“仅包含stamp实例”的注释。</p>
+<p>对于泛型，类型声明包含的信息，而不是注释：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Parameterized collection type - typesafe</span><br><span class="line">private final Collection&lt;Stamp&gt; stamps = ... ;</span><br></pre></td></tr></table></figure>
+<p>从这个声明中，编译器知道stamps集合应该只包含Stamp实例，并保证它是true，假设你的整个代码类库编译时不发出（或者抑制;参见条目27）任何警告。 当使用参数化类型声明声明stamps时，错误的插入会生成一个编译时错误消息，告诉你到底发生了什么错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Test.java:9: error: incompatible types: Coin cannot be converted</span><br><span class="line">to Stamp</span><br><span class="line">    c.add(new Coin());</span><br><span class="line">              ^</span><br></pre></td></tr></table></figure>
+<p>当从集合中检索元素时，编译器会为你插入不可见的强制转换，并保证它们不会失败（再假设你的所有代码都不会生成或禁止任何编译器警告）。 虽然意外地将coin实例插入stamp集合的预期可能看起来很牵强，但这个问题是真实的。 例如，很容易想象将<code>BigInteger</code>放入一个只包含<code>BigDecimal</code>实例的集合中。</p>
+<p>如前所述，使用原始类型（没有类型参数的泛型）是合法的，但是你不应该这样做。 <strong>如果你使用原始类型，则会丧失泛型的所有安全性和表达上的优势</strong>。 鉴于你不应该使用它们，为什么语言设计者首先允许原始类型呢？ 答案是为了兼容性。 泛型被添加时，Java即将进入第二个十年，并且有大量的代码没有使用泛型。 所有这些代码都是合法的，并且与使用泛型的新代码进行交互操作被认为是至关重要的。 将参数化类型的实例传递给为原始类型设计的方法必须是合法的，反之亦然。 这个需求，被称为迁移兼容性，驱使决策支持原始类型，并使用擦除来实现泛型（条目 28）。</p>
+<p>虽然不应使用诸如List之类的原始类型，但可以使用参数化类型来允许插入任意对象（如<code>List&lt;Object&gt;</code>）。 原始类型List和参数化类型<code>List&lt;Object&gt;</code>之间有什么区别？ 松散地说，前者已经选择了泛型类型系统，而后者明确地告诉编译器，它能够保存任何类型的对象。 虽然可以将<code>List&lt;String&gt;</code>传递给List类型的参数，但不能将其传递给<code>List&lt;Object&gt;</code>类型的参数。 泛型有子类型的规则，<code>List&lt;String&gt;</code>是原始类型List的子类型，但不是参数化类型<code>List&lt;Object&gt;</code>的子类型（条目 28）。 因此，如果使用诸如List之类的原始类型，则会丢失类型安全性，但是如果使用参数化类型（例如<code>List &lt;Object&gt;</code>）则不会。</p>
+<p>为了具体说明，请考虑以下程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Fails at runtime - unsafeAdd method uses a raw type (List)!</span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    List&lt;String&gt; strings = new ArrayList&lt;&gt;();</span><br><span class="line">    unsafeAdd(strings, Integer.valueOf(42));</span><br><span class="line">    String s = strings.get(0); // Has compiler-generated cast</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static void unsafeAdd(List list, Object o) &#123;</span><br><span class="line">    list.add(o);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此程序可以编译，它使用原始类型列表，但会收到警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Test.java:10: warning: [unchecked] unchecked call to add(E) as a</span><br><span class="line">member of the raw type List</span><br><span class="line">    list.add(o);</span><br><span class="line">            ^</span><br></pre></td></tr></table></figure>
+<p>实际上，如果运行该程序，则当程序尝试调用<code>strings.get(0)</code>的结果（一个Integer）转换为一个String时，会得到ClassCastException异常。 这是一个编译器生成的强制转换，因此通常会保证成功，但在这种情况下，我们忽略了编译器警告并付出了代价。</p>
+<p>如果用unsafeAdd声明中的参数化类型<code>List &lt;Object&gt;</code>替换原始类型List，并尝试重新编译该程序，则会发现它不再编译，而是发出错误消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Test.java:5: error: incompatible types: List&lt;String&gt; cannot be</span><br><span class="line">converted to List&lt;Object&gt;</span><br><span class="line">    unsafeAdd(strings, Integer.valueOf(42));</span><br></pre></td></tr></table></figure>
+<p>你可能会试图使用原始类型来处理元素类型未知且无关紧要的集合。 例如，假设你想编写一个方法，它需要两个集合并返回它们共同拥有的元素的数量。 如果是泛型新手，那么您可以这样写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Use of raw type for unknown element type - don&apos;t do this!</span><br><span class="line">static int numElementsInCommon(Set s1, Set s2) &#123;</span><br><span class="line">    int result = 0;</span><br><span class="line">    for (Object o1 : s1)</span><br><span class="line">        if (s2.contains(o1))</span><br><span class="line">            result++;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方法可以工作，但它使用原始类型，这是危险的。 安全替代方式是使用无限制通配符类型（unbounded wildcard types）。 如果要使用泛型类型，但不知道或关心实际类型参数是什么，则可以使用问号来代替。 例如，泛型类型<code>Set&lt;E&gt;</code>的无限制通配符类型是<code>Set &lt;?&gt;</code>（读取“某种类型的集合”）。 它是最通用的参数化的Set类型，能够保持任何集合。 下面是<code>numElementsInCommon</code>方法使用无限制通配符类型声明的情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Uses unbounded wildcard type - typesafe and flexible</span><br><span class="line">static int numElementsInCommon(Set&lt;?&gt; s1, Set&lt;?&gt; s2) &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+<p>无限制通配符<code>Set &lt;?&gt;</code>与原始类型Set之间有什么区别？ 问号真的给你放任何东西吗？ 这不是要点，但通配符类型是安全的，原始类型不是。 你可以将任何元素放入具有原始类型的集合中，轻易破坏集合的类型不变性（如第119页上的unsafeAdd方法所示）; 你不能把任何元素（除null之外）放入一个<code>Collection &lt;?&gt;</code>中。 试图这样做会产生一个像这样的编译时错误消息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">WildCard.java:13: error: incompatible types: String cannot be</span><br><span class="line">converted to CAP#1</span><br><span class="line">    c.add(&quot;verboten&quot;);</span><br><span class="line">          ^</span><br><span class="line">  where CAP#1 is a fresh type-variable:</span><br><span class="line">    CAP#1 extends Object from capture of ?</span><br></pre></td></tr></table></figure>
+<p>不可否认的是，这个错误信息留下了一些需要的东西，但是编译器已经完成了它的工作，不管它的元素类型是什么，都不会破坏集合的类型不变性。 你不仅可以将任何元素（除null以外）放入一个<code>Collection &lt;?&gt;</code>中，但是不能保证你所得到的对象的类型。 如果这些限制是不可接受的，可以使用泛型方法（条目 30）或有限制配符类型（条目 31）。</p>
+<p>对于不应该使用原始类型的规则，有一些小例外。 <strong>你必须在类字面值（class literals）中使用原始类型</strong>。 规范中不允许使用参数化类型（尽管它允许数组类型和基本类型）[JLS，15.8.2]。 换句话说，<code>List.class</code>，<code>String [] .class</code>和<code>int.class</code>都是合法的，但<code>List &lt;String&gt; .class</code>和<code>List &lt;?&gt;.class</code>不是合法的。</p>
+<p>规则的第二个例外涉及<code>instanceof</code>操作符。 因为泛型类型信息在运行时被删除，所以在无限制通配符类型以外的参数化类型上使用instanceof运算符是非法的。 使用无限制通配符类型代替原始类型不会以任何方式影响instanceof运算符的行为。 在这种情况下，尖括号和问号就显得多余。 以下是使用泛型类型的instanceof运算符的首选方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// Legitimate use of raw type - instanceof operator</span><br><span class="line">if (o instanceof Set) &#123;       // Raw type</span><br><span class="line">    Set&lt;?&gt; s = (Set&lt;?&gt;) o;    // Wildcard type</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，一旦确定<code>o</code>对象是一个Set，则必须将其转换为通配符<code>Set &lt;?&gt;</code>，而不是原始类型Set。 这是一个强制转换，所以不会导致编译器警告。</p>
+<p>总之，使用原始类型可能导致运行时异常，所以不要使用它们。 它们仅用于与泛型引入之前的传统代码的兼容性和互操作性。 作为一个快速回顾，<code>Set&lt;Object&gt;</code>是一个参数化类型，表示一个可以包含任何类型对象的集合，<code>Set&lt;?&gt;</code>是一个通配符类型，表示一个只能包含某些未知类型对象的集合，Set是一个原始类型，它不在泛型类型系统之列。 前两个类型是安全的，最后一个不是。</p>
+<p>为了快速参考，下表中总结了本条目（以及本章稍后介绍的一些）中介绍的术语：</p>
+<table>
+<thead>
+<tr>
+<th>术语</th>
+<th>中文含义</th>
+<th>举例</th>
+<th>所在条目</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parameterized type</td>
+<td>参数化类型</td>
+<td><code>List&lt;String&gt;</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Actual type parameter</td>
+<td>实际类型参数</td>
+<td><code>String</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Generic type</td>
+<td>泛型类型</td>
+<td><code>List&lt;E&gt;</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Formal type parameter</td>
+<td>形式类型参数</td>
+<td><code>E</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Unbounded wildcard type</td>
+<td>无限制通配符类型</td>
+<td><code>List&lt;?&gt;</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Raw type</td>
+<td>原始类型</td>
+<td><code>List</code></td>
+<td>条目 26</td>
+</tr>
+<tr>
+<td>Bounded type parameter</td>
+<td>限制类型参数</td>
+<td><code>&lt;E extends Number&gt;</code></td>
+<td>条目 29</td>
+</tr>
+<tr>
+<td>Recursive type bound</td>
+<td>递归类型限制</td>
+<td><code>&lt;T extends Comparable&lt;T&gt;&gt;</code></td>
+<td>条目 30</td>
+</tr>
+<tr>
+<td>Bounded wildcard type</td>
+<td>限制通配符类型</td>
+<td><code>List&lt;? extends Number&gt;</code></td>
+<td>条目 31</td>
+</tr>
+<tr>
+<td>Generic method</td>
+<td>泛型方法</td>
+<td><code>static &lt;E&gt; List&lt;E&gt; asList(E[] a)</code></td>
+<td>条目 30</td>
+</tr>
+<tr>
+<td>Type token</td>
+<td>类型令牌</td>
+<td><code>String.class</code></td>
+<td>条目 33</td>
+</tr>
+</tbody>
+</table>
+<h2 id="27-消除非检查警告"><a href="#27-消除非检查警告" class="headerlink" title="27. 消除非检查警告"></a>27. 消除非检查警告</h2><p>使用泛型编程时，会看到许多编译器警告：未经检查的强制转换警告，未经检查的方法调用警告，未经检查的参数化可变长度类型警告以及未经检查的转换警告。 你使用泛型获得的经验越多，获得的警告越少，但不要期望新编写的代码能够干净地编译。</p>
+<p>许多未经检查的警告很容易消除。 例如，假设你不小心写了以下声明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set&lt;Lark&gt; exaltation = new HashSet();</span><br></pre></td></tr></table></figure>
+<p>编译器会提醒你你做错了什么：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Venery.java:4: warning: [unchecked] unchecked conversion</span><br><span class="line">        Set&lt;Lark&gt; exaltation = new HashSet();</span><br><span class="line">                               ^</span><br><span class="line">  required: Set&lt;Lark&gt;</span><br><span class="line">  found:    HashSet</span><br></pre></td></tr></table></figure>
+<p>然后可以进行指示修正，让警告消失。 请注意，实际上并不需要指定类型参数，只是为了表明它与Java 7中引入的钻石运算符（”&lt;&gt;”）一同出现。然后编译器会推断出正确的实际类型参数（在本例中为Lark）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set&lt;Lark&gt; exaltation = new HashSet&lt;&gt;();</span><br></pre></td></tr></table></figure>
+<p>但一些警告更难以消除。 本章充满了这种警告的例子。 当你收到需要进一步思考的警告时，坚持不懈！ <strong>尽可能地消除每一个未经检查的警告</strong>。 如果你消除所有的警告，你可以放心，你的代码是类型安全的，这是一件非常好的事情。 这意味着在运行时你将不会得到一个ClassCastException异常，并且增加了你的程序将按照你的意图行事的信心。</p>
+<p><strong>如果你不能消除警告，但你可以证明引发警告的代码是类型安全的，那么（并且只能这样）用@SuppressWarnings(“unchecked”)注解来抑制警告</strong>。 如果你在没有首先证明代码是类型安全的情况下压制警告，那么你给自己一个错误的安全感。 代码可能会在不发出任何警告的情况下进行编译，但是它仍然可以在运行时抛出ClassCastException异常。 但是，如果你忽略了你认为是安全的未经检查的警告（而不是抑制它们），那么当一个新的警告出现时，你将不会注意到这是一个真正的问题。 新出现的警告就会淹没在所有的错误警告当中。</p>
+<p><code>SuppressWarnings</code>注解可用于任何声明，从单个局部变量声明到整个类。 <strong>始终在尽可能最小的范围内使用SuppressWarnings注解</strong>。 通常这是一个变量声明或一个非常短的方法或构造方法。 切勿在整个类上使用<code>SuppressWarnings</code>注解。 这样做可能会掩盖重要的警告。</p>
+<p>如果你发现自己在长度超过一行的方法或构造方法上使用<code>SuppressWarnings</code>注解，则可以将其移到局部变量声明上。 你可能需要声明一个新的局部变量，但这是值得的。 例如，考虑这个来自ArrayList的toArray方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">    if (a.length &lt; size)</span><br><span class="line">       return (T[]) Arrays.copyOf(elements, size, a.getClass());</span><br><span class="line">    System.arraycopy(elements, 0, a, 0, size);</span><br><span class="line">    if (a.length &gt; size)</span><br><span class="line">       a[size] = null;</span><br><span class="line">    return a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">如果编译ArrayList类，则该方法会生成此警告：</span><br><span class="line">ArrayList.java:305: warning: [unchecked] unchecked cast</span><br><span class="line">       return (T[]) Arrays.copyOf(elements, size, a.getClass());</span><br><span class="line">                                 ^</span><br><span class="line">  required: T[]</span><br><span class="line">  found:    Object[]</span><br></pre></td></tr></table></figure>
+<p>在返回语句中设置<code>SuppressWarnings</code>注解是非法的，因为它不是一个声明[JLS，9.7]。 你可能会试图把注释放在整个方法上，但是不要这要做。 相反，声明一个局部变量来保存返回值并标注它的声明，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// Adding local variable to reduce scope of @SuppressWarnings</span><br><span class="line">public &lt;T&gt; T[] toArray(T[] a) &#123;</span><br><span class="line">    if (a.length &lt; size) &#123;</span><br><span class="line">        // This cast is correct because the array we&apos;re creating</span><br><span class="line">        // is of the same type as the one passed in, which is T[].</span><br><span class="line">        @SuppressWarnings(&quot;unchecked&quot;) T[] result =</span><br><span class="line">            (T[]) Arrays.copyOf(elements, size, a.getClass());</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    System.arraycopy(elements, 0, a, 0, size);</span><br><span class="line">    if (a.length &gt; size)</span><br><span class="line">        a[size] = null;</span><br><span class="line">    return a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所产生的方法干净地编译，并最小化未经检查的警告被抑制的范围。</p>
+<p><strong>每当使用@SuppressWarnings(“unchecked”)注解时，请添加注释，说明为什么是安全的</strong>。 这将有助于他人理解代码，更重要的是，这将减少有人修改代码的可能性，从而使计算不安全。 如果你觉得很难写这样的注释，请继续思考。 毕竟，你最终可能会发现未经检查的操作是不安全的。</p>
+<p>总之，未经检查的警告是重要的。 不要忽视他们。 每个未经检查的警告代表在运行时出现ClassCastException异常的可能性。 尽你所能消除这些警告。 如果无法消除未经检查的警告，并且可以证明引发该警告的代码是安全类型的，则可以在尽可能小的范围内使用 <code>@SuppressWarnings(“unchecked”)</code>注解来禁止警告。 记录你决定在注释中抑制此警告的理由。</p>
+<h2 id="28-列表优于数组"><a href="#28-列表优于数组" class="headerlink" title="28.列表优于数组"></a>28.列表优于数组</h2><p>数组在两个重要方面与泛型不同。 首先，数组是协变的（covariant）。 这个吓人的单词意味着如果<code>Sub</code>是<code>Super</code>的子类型，则数组类型<code>Sub []</code>是数组类型<code>Super []</code>的子类型。 相比之下，泛型是不变的（invariant）：对于任何两种不同的类型<code>Type1</code>和<code>Type2</code>，<code>List&lt;Type1&gt;</code>既不是<code>List &lt;Type2&gt;</code>的子类型也不是父类型。[JLS，4.10; Naftalin07,2.5]。 你可能认为这意味着泛型是不足的，但可以说是数组缺陷。 这段代码是合法的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// Fails at runtime!</span><br><span class="line">Object[] objectArray = new Long[1];</span><br><span class="line">objectArray[0] = &quot;I don&apos;t fit in&quot;; // Throws ArrayStoreException</span><br></pre></td></tr></table></figure>
+<p>但这个不是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// Won&apos;t compile!</span><br><span class="line">List&lt;Object&gt; ol = new ArrayList&lt;Long&gt;(); // Incompatible types</span><br><span class="line">ol.add(&quot;I don&apos;t fit in&quot;);</span><br></pre></td></tr></table></figure>
+<p>无论哪种方式，你不能把一个String类型放到一个Long类型容器中，但是用一个数组，你会发现在运行时产生了一个错误；对于列表，可以在编译时就能发现错误。 当然，你宁愿在编译时找出错误。</p>
+<p>数组和泛型之间的第二个主要区别是数组被具体化了（reified）[JLS，4.7]。 这意味着数组在运行时知道并强制执行它们的元素类型。 如前所述，如果尝试将一个String放入Long数组中，得到一个ArrayStoreException异常。 相反，泛型通过擦除（erasure）来实现[JLS，4.6]。 这意味着它们只在编译时执行类型约束，并在运行时丢弃（或擦除）它们的元素类型信息。 擦除是允许泛型类型与不使用泛型的遗留代码自由互操作（条目 26），从而确保在Java 5中平滑过渡到泛型。</p>
+<p>由于这些基本差异，数组和泛型不能很好地在一起混合使用。 例如，创建泛型类型的数组，参数化类型的数组，以及类型参数的数组都是非法的。 因此，这些数组创建表达式都不合法：<code>new List &lt;E&gt; []</code>，<code>new List &lt;String&gt; []</code>，<code>new E []</code>。 所有将在编译时导致泛型数组创建错误。</p>
+<p>为什么创建一个泛型数组是非法的？ 因为它不是类型安全的。 如果这是合法的，编译器生成的强制转换程序在运行时可能会因为ClassCastException异常而失败。 这将违反泛型类型系统提供的基本保证。</p>
+<p>为了具体说明，请考虑下面的代码片段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Why generic array creation is illegal - won&apos;t compile!</span><br><span class="line">List&lt;String&gt;[] stringLists = new List&lt;String&gt;[1];  // (1)</span><br><span class="line">List&lt;Integer&gt; intList = List.of(42);               // (2)</span><br><span class="line">Object[] objects = stringLists;                    // (3)</span><br><span class="line">objects[0] = intList;                              // (4)</span><br><span class="line">String s = stringLists[0].get(0);                  // (5)</span><br></pre></td></tr></table></figure>
+<p>让我们假设第1行创建一个泛型数组是合法的。第2行创建并初始化包含单个元素的<code>List&lt;Integer&gt;</code>。第3行将<code>List&lt;String&gt;</code>数组存储到Object数组变量中，这是合法的，因为数组是协变的。第4行将<code>List &lt;Integer&gt;</code>存储在Object数组的唯一元素中，这是因为泛型是通过擦除来实现的：<code>List&lt;Integer&gt;</code>实例的运行时类型仅仅是List，而<code>List&lt;String&gt; []</code>实例是<code>List []</code>，所以这个赋值不会产生ArrayStoreException异常。现在我们遇到了麻烦。将一个<code>List&lt;Integer&gt;</code>实例存储到一个声明为仅保存<code>List&lt;String&gt;</code>实例的数组中。在第5行中，我们从这个数组的唯一列表中检索唯一的元素。编译器自动将检索到的元素转换为String，但它是一个Integer，所以我们在运行时得到一个ClassCastException异常。为了防止发生这种情况，第1行（创建一个泛型数组）必须产生一个编译时错误。</p>
+<p>类型<code>E</code>，<code>List&lt;E&gt;</code>和<code>List&lt;String&gt;</code>等在技术上被称为不可具体化的类型（nonreifiable types）[JLS，4.7]。 直观地说，不可具体化的类型是其运行时表示包含的信息少于其编译时表示的类型。 由于擦除，可唯一确定的参数化类型是无限定通配符类型，如<code>List &lt;?&gt;</code>和<code>Map &lt;?, ?&gt;</code>（条目 26）。 尽管很少有用，创建无限定通配符类型的数组是合法的。</p>
+<p>禁止泛型数组的创建可能会很恼人的。 这意味着，例如，泛型集合通常不可能返回其元素类型的数组（但是参见条目 33中的部分解决方案）。 这也意味着，当使用可变参数方法（条目 53）和泛型时，会产生令人困惑的警告。 这是因为每次调用可变参数方法时，都会创建一个数组来保存可变参数。 如果此数组的元素类型不可确定，则会收到警告。 <code>SafeVarargs</code>注解可以用来解决这个问题（条目 32）。</p>
+<p>当你在强制转换为数组类型时，得到泛型数组创建错误，或是未经检查的强制转换警告时，最佳解决方案通常是使用集合类型<code>List &lt;E&gt;</code>而不是数组类型<code>E []</code>。 这样可能会牺牲一些简洁性或性能，但作为交换，你会获得更好的类型安全性和互操作性。</p>
+<p>例如，假设你想用带有集合的构造方法来编写一个<code>Chooser</code>类，并且有个方法返回随机选择的集合的一个元素。 根据传递给构造方法的集合，可以使用选择器作为游戏模具，魔术8球或数据源进行蒙特卡罗模拟。 这是一个没有泛型的简单实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// Chooser - a class badly in need of generics!</span><br><span class="line">public class Chooser &#123;</span><br><span class="line">    private final Object[] choiceArray;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public Chooser(Collection choices) &#123;</span><br><span class="line">        choiceArray = choices.toArray();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public Object choose() &#123;</span><br><span class="line">        Random rnd = ThreadLocalRandom.current();</span><br><span class="line">        return choiceArray[rnd.nextInt(choiceArray.length)];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>要使用这个类，每次调用方法时，都必须将Object的<code>choose</code>方法的返回值转换为所需的类型，如果类型错误，则转换在运行时失败。 我们先根据条目 29的建议，试图修改Chooser类，使其成为泛型的。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// A first cut at making Chooser generic - won&apos;t compile</span><br><span class="line">public class Chooser&lt;T&gt; &#123;</span><br><span class="line">    private final T[] choiceArray;</span><br><span class="line"></span><br><span class="line">    public Chooser(Collection&lt;T&gt; choices) &#123;</span><br><span class="line">        choiceArray = choices.toArray();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // choose method unchanged</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你尝试编译这个类，会得到这个错误信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Chooser.java:9: error: incompatible types: Object[] cannot be</span><br><span class="line">converted to T[]</span><br><span class="line">        choiceArray = choices.toArray();</span><br><span class="line">                                     ^</span><br><span class="line">  where T is a type-variable:</span><br><span class="line">    T extends Object declared in class Chooser</span><br></pre></td></tr></table></figure>
+<p>没什么大不了的，将Object数组转换为T数组：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">choiceArray = (T[]) choices.toArray();</span><br></pre></td></tr></table></figure>
+<p>这没有了错误，而是得到一个警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Chooser.java:9: warning: [unchecked] unchecked cast</span><br><span class="line">        choiceArray = (T[]) choices.toArray();</span><br><span class="line">                                           ^</span><br><span class="line">  required: T[], found: Object[]</span><br><span class="line">  where T is a type-variable:</span><br><span class="line">T extends Object declared in class Chooser</span><br></pre></td></tr></table></figure>
+<p>编译器告诉你在运行时不能保证强制转换的安全性，因为程序不会知道T代表什么类型——记住，元素类型信息在运行时会被泛型删除。 该程序可以正常工作吗？ 是的，但编译器不能证明这一点。 你可以证明这一点，在注释中提出证据，并用注解来抑制警告，但最好是消除警告的原因（条目 27）。</p>
+<p>要消除未经检查的强制转换警告，请使用列表而不是数组。 下面是另一个版本的Chooser类，编译时没有错误或警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// List-based Chooser - typesafe</span><br><span class="line">public class Chooser&lt;T&gt; &#123;</span><br><span class="line">    private final List&lt;T&gt; choiceList;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public Chooser(Collection&lt;T&gt; choices) &#123;</span><br><span class="line">        choiceList = new ArrayList&lt;&gt;(choices);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public T choose() &#123;</span><br><span class="line">        Random rnd = ThreadLocalRandom.current();</span><br><span class="line">        return choiceList.get(rnd.nextInt(choiceList.size()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个版本有些冗长，也许运行比较慢，但是值得一提的是，在运行时不会得到<code>ClassCastException</code>异常。</p>
+<p>总之，数组和泛型具有非常不同的类型规则。 数组是协变和具体化的; 泛型是不变的，类型擦除的。 因此，数组提供运行时类型的安全性，但不提供编译时类型的安全性，反之亦然。 一般来说，数组和泛型不能很好地混合工作。 如果你发现把它们混合在一起，得到编译时错误或者警告，你的第一个冲动应该是用列表来替换数组。</p>
+<h2 id="29-优先考虑泛型"><a href="#29-优先考虑泛型" class="headerlink" title="29. 优先考虑泛型"></a>29. 优先考虑泛型</h2><p>参数化声明并使用JDK提供的泛型类型和方法通常不会太困难。 但编写自己的泛型类型有点困难，但值得努力学习。</p>
+<p>考虑条目 7中的简单堆栈实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">// Object-based collection - a prime candidate for generics</span><br><span class="line">public class Stack &#123;</span><br><span class="line">    private Object[] elements;</span><br><span class="line">    private int size = 0;</span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 16;</span><br><span class="line"></span><br><span class="line">    public Stack() &#123;</span><br><span class="line">        elements = new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void push(Object e) &#123;</span><br><span class="line">        ensureCapacity();</span><br><span class="line">        elements[size++] = e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public Object pop() &#123;</span><br><span class="line">        if (size == 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        Object result = elements[--size];</span><br><span class="line">        elements[size] = null; // Eliminate obsolete reference</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public boolean isEmpty() &#123;</span><br><span class="line">        return size == 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void ensureCapacity() &#123;</span><br><span class="line">        if (elements.length == size)</span><br><span class="line">            elements = Arrays.copyOf(elements, 2 * size + 1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个类应该已经被参数化了，但是由于事实并非如此，我们可以对它进行泛型化。 换句话说，我们可以参数化它，而不会损害原始非参数化版本的客户端。 就目前而言，客户端必须强制转换从堆栈中弹出的对象，而这些强制转换可能会在运行时失败。 泛型化类的第一步是在其声明中添加一个或多个类型参数。 在这种情况下，有一个类型参数，表示堆栈的元素类型，这个类型参数的常规名称是<code>E</code>（条目 68）。</p>
+<p>下一步是用相应的类型参数替换所有使用的Object类型，然后尝试编译生成的程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// Initial attempt to generify Stack - won&apos;t compile!</span><br><span class="line">public class Stack&lt;E&gt; &#123;</span><br><span class="line">    private E[] elements;</span><br><span class="line">    private int size = 0;</span><br><span class="line">    private static final int DEFAULT_INITIAL_CAPACITY = 16;</span><br><span class="line"></span><br><span class="line">    public Stack() &#123;</span><br><span class="line">        elements = new E[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void push(E e) &#123;</span><br><span class="line">        ensureCapacity();</span><br><span class="line">        elements[size++] = e;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public E pop() &#123;</span><br><span class="line">        if (size == 0)</span><br><span class="line">            throw new EmptyStackException();</span><br><span class="line">        E result = elements[--size];</span><br><span class="line">        elements[size] = null; // Eliminate obsolete reference</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    ... // no changes in isEmpty or ensureCapacity</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>你通常会得到至少一个错误或警告，这个类也不例外。 幸运的是，这个类只产生一个错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Stack.java:8: generic array creation</span><br><span class="line">        elements = new E[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">                   ^</span><br></pre></td></tr></table></figure>
+<p>如条目 28所述，你不能创建一个不可具体化类型的数组，例如类型<code>E</code>。每当编写一个由数组支持的泛型时，就会出现此问题。 有两种合理的方法来解决它。 第一种解决方案直接规避了对泛型数组创建的禁用：创建一个Object数组并将其转换为泛型数组类型。 现在没有了错误，编译器会发出警告。 这种用法是合法的，但不是（一般）类型安全的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stack.java:8: warning: [unchecked] unchecked cast</span><br><span class="line">found: Object[], required: E[]</span><br><span class="line">        elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">                       ^</span><br></pre></td></tr></table></figure>
+<p>编译器可能无法证明你的程序是类型安全的，但你可以。 你必须说服自己，不加限制的类型强制转换不会损害程序的类型安全。 有问题的数组（元素）保存在一个私有属性中，永远不会返回给客户端或传递给任何其他方法。 保存在数组中的唯一元素是那些传递给<code>push</code>方法的元素，它们是<code>E</code>类型的，所以未经检查的强制转换不会造成任何伤害。</p>
+<p>一旦证明未经检查的强制转换是安全的，请尽可能缩小范围（条目 27）。 在这种情况下，构造方法只包含未经检查的数组创建，所以在整个构造方法中抑制警告是合适的。 通过添加一个注解来执行此操作，Stack可以干净地编译，并且可以在没有显式强制转换或担心ClassCastException异常的情况下使用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">// The elements array will contain only E instances from push(E).</span><br><span class="line">// This is sufficient to ensure type safety, but the runtime</span><br><span class="line">// type of the array won&apos;t be E[]; it will always be Object[]!</span><br><span class="line">@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line">public Stack() &#123;</span><br><span class="line">    elements = (E[]) new Object[DEFAULT_INITIAL_CAPACITY];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>消除Stack中的泛型数组创建错误的第二种方法是将属性元素的类型从<code>E []</code>更改为<code>Object []</code>。 如果这样做，会得到一个不同的错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stack.java:19: incompatible types</span><br><span class="line">found: Object, required: E</span><br><span class="line">        E result = elements[--size];</span><br><span class="line">                           ^</span><br></pre></td></tr></table></figure>
+<p>可以通过将从数组中检索到的元素转换为<code>E</code>来将此错误更改为警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Stack.java:19: warning: [unchecked] unchecked cast</span><br><span class="line">found: Object, required: E</span><br><span class="line">        E result = (E) elements[--size];</span><br><span class="line">                               ^</span><br></pre></td></tr></table></figure>
+<p>因为E是不可具体化的类型，编译器无法在运行时检查强制转换。 再一次，你可以很容易地向自己证明，不加限制的转换是安全的，所以可以适当地抑制警告。 根据条目 27的建议，我们只在包含未经检查的强制转换的分配上抑制警告，而不是在整个<code>pop</code>方法上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// Appropriate suppression of unchecked warning</span><br><span class="line">public E pop() &#123;</span><br><span class="line">    if (size == 0)</span><br><span class="line">        throw new EmptyStackException();</span><br><span class="line"></span><br><span class="line">    // push requires elements to be of type E, so cast is correct</span><br><span class="line">    @SuppressWarnings(&quot;unchecked&quot;) E result =</span><br><span class="line">        (E) elements[--size];</span><br><span class="line"></span><br><span class="line">    elements[size] = null; // Eliminate obsolete reference</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两种消除泛型数组创建的技术都有其追随者。 第一个更可读：数组被声明为<code>E []</code>类型，清楚地表明它只包含E实例。 它也更简洁：在一个典型的泛型类中，你从代码中的许多点读取数组; 第一种技术只需要一次转换（创建数组的地方），而第二种技术每次读取数组元素都需要单独转换。 因此，第一种技术是优选的并且在实践中更常用。 但是，它确实会造成堆污染（heap pollution）（条目 32）：数组的运行时类型与编译时类型不匹配（除非E碰巧是Object）。 这使得一些程序员非常不安，他们选择了第二种技术，尽管在这种情况下堆的污染是无害的。</p>
+<p>下面的程序演示了泛型Stack类的使用。 该程序以相反的顺序打印其命令行参数，并将其转换为大写。 对从堆栈弹出的元素调用String的<code>toUpperCase</code>方法不需要显式强制转换，而自动生成的强制转换将保证成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// Little program to exercise our generic Stack</span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">    Stack&lt;String&gt; stack = new Stack&lt;&gt;();</span><br><span class="line">    for (String arg : args)</span><br><span class="line">        stack.push(arg);</span><br><span class="line">    while (!stack.isEmpty())</span><br><span class="line">        System.out.println(stack.pop().toUpperCase());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子似乎与条目 28相矛盾，条目 28中鼓励使用列表优先于数组。 在泛型类型中使用列表并不总是可行或可取的。 Java本身生来并不支持列表，所以一些泛型类型（如ArrayList）必须在数组上实现。 其他的泛型类型，比如HashMap，是为了提高性能而实现的。</p>
+<p>绝大多数泛型类型就像我们的Stack示例一样，它们的类型参数没有限制：可以创建一个<code>Stack &lt;Object&gt;</code>，<code>Stack &lt;int []&gt;</code>，<code>Stack &lt;List &lt;String &gt;&gt;</code>或者其他任何对象的Stack引用类型。 请注意，不能创建基本类型的堆栈：尝试创建<code>Stack&lt;int&gt;</code>或<code>Stack&lt;double&gt;</code>将导致编译时错误。 这是Java泛型类型系统的一个基本限制。 可以使用基本类型的包装类（条目 61）来解决这个限制。</p>
+<p>有一些泛型类型限制了它们类型参数的允许值。 例如，考虑<code>java.util.concurrent.DelayQueue</code>，它的声明如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class DelayQueue&lt;E extends Delayed&gt; implements BlockingQueue&lt;E&gt;</span><br></pre></td></tr></table></figure>
+<p>类型参数列表（<code>&lt;E extends Delayed&gt;</code>）要求实际的类型参数<code>E</code>是<code>java.util.concurrent.Delayed</code>的子类型。 这使得<code>DelayQueue</code>实现及其客户端可以利用<code>DelayQueue</code>元素上的<code>Delayed</code>方法，而不需要显式的转换或ClassCastException异常的风险。 类型参数E被称为限定类型参数。 请注意，子类型关系被定义为每个类型都是自己的子类型[JLS，4.10]，因此创建<code>DelayQueue &lt;Delayed&gt;</code>是合法的。</p>
+<p>总之，泛型类型比需要在客户端代码中强制转换的类型更安全，更易于使用。 当你设计新的类型时，确保它们可以在没有这种强制转换的情况下使用。 这通常意味着使类型泛型化。 如果你有任何现有的类型，应该是泛型的但实际上却不是，那么把它们泛型化。 这使这些类型的新用户的使用更容易，而不会破坏现有的客户端（条目 26）。</p>
+<h2 id="30-优先使用泛型方法"><a href="#30-优先使用泛型方法" class="headerlink" title="30. 优先使用泛型方法"></a>30. 优先使用泛型方法</h2><p>正如类可以是泛型的，方法也可以是泛型的。 对参数化类型进行操作的静态工具方法通常都是泛型的。 集合中的所有“算法”方法（如<code>binarySearc</code>h和<code>sort</code>）都是泛型的。</p>
+<p>编写泛型方法类似于编写泛型类型。 考虑这个方法，它返回两个集合的并集：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">// Uses raw types - unacceptable! [Item 26]</span><br><span class="line"></span><br><span class="line">public static Set union(Set s1, Set s2) &#123;</span><br><span class="line"></span><br><span class="line">    Set result = new HashSet(s1);</span><br><span class="line"></span><br><span class="line">    result.addAll(s2);</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此方法可以编译但有两个警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Union.java:5: warning: [unchecked] unchecked call to</span><br><span class="line"></span><br><span class="line">HashSet(Collection&lt;? extends E&gt;) as a member of raw type HashSet</span><br><span class="line"></span><br><span class="line">        Set result = new HashSet(s1);</span><br><span class="line"></span><br><span class="line">                     ^</span><br><span class="line"></span><br><span class="line">Union.java:6: warning: [unchecked] unchecked call to</span><br><span class="line"></span><br><span class="line">addAll(Collection&lt;? extends E&gt;) as a member of raw type Set</span><br><span class="line"></span><br><span class="line">        result.addAll(s2);</span><br><span class="line"></span><br><span class="line">                     ^</span><br></pre></td></tr></table></figure>
+<p>要修复这些警告并使方法类型安全，请修改其声明以声明表示三个集合（两个参数和返回值）的元素类型的类型参数，并在整个方法中使用此类型参数。 声明类型参数的类型参数列表位于方法的修饰符和返回类型之间。 在这个例子中，类型参数列表是<code>&lt;E&gt;</code>，返回类型是<code>Set&lt;E&gt;</code>。 类型参数的命名约定对于泛型方法和泛型类型是相同的（条目 29和68）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Generic method</span><br><span class="line"></span><br><span class="line">public static &lt;E&gt; Set&lt;E&gt; union(Set&lt;E&gt; s1, Set&lt;E&gt; s2) &#123;</span><br><span class="line"></span><br><span class="line">    Set&lt;E&gt; result = new HashSet&lt;&gt;(s1);</span><br><span class="line"></span><br><span class="line">    result.addAll(s2);</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至少对于简单的泛型方法来说，就是这样。 此方法编译时不会生成任何警告，并提供类型安全性和易用性。 这是一个简单的程序来运行该方法。 这个程序不包含强制转换和编译时没有错误或警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// Simple program to exercise generic method</span><br><span class="line"></span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    Set&lt;String&gt; guys = Set.of(&quot;Tom&quot;, &quot;Dick&quot;, &quot;Harry&quot;);</span><br><span class="line"></span><br><span class="line">    Set&lt;String&gt; stooges = Set.of(&quot;Larry&quot;, &quot;Moe&quot;, &quot;Curly&quot;);</span><br><span class="line"></span><br><span class="line">    Set&lt;String&gt; aflCio = union(guys, stooges);</span><br><span class="line"></span><br><span class="line">    System.out.println(aflCio);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当运行这个程序时，它会打印<code>[Moe, Tom, Harry, Larry, Curly, Dick]</code>（输出中元素的顺序依赖于具体实现。）</p>
+<p><code>union</code>方法的一个限制是所有三个集合（输入参数和返回值）的类型必须完全相同。 通过使用限定通配符类型（ bounded wildcard types）（条目 31），可以使该方法更加灵活。</p>
+<p>有时，需要创建一个不可改变但适用于许多不同类型的对象。 因为泛型是通过擦除来实现的（条目 28），所以可以使用单个对象进行所有必需的类型参数化，但是需要编写一个静态工厂方法来重复地为每个请求的类型参数化分配对象。 这种称为泛型单例工厂（generic singleton factory）的模式用于方法对象（ function objects）（条目 42），比如<code>Collections.reverseOrder</code>方法，偶尔也用于<code>Collections.emptySet</code>之类的集合。</p>
+<p>假设你想写一个恒等方法分配器（ identity function dispenser）。 类库提供了<code>Function.identity</code>方法，所以没有理由编写你自己的实现（条目 59），但它是有启发性的。 如果每次要求的时候都去创建一个新的恒等方法对象是浪费的，因为它是无状态的。 如果Java的泛型被具体化，那么每个类型都需要一个恒等方法，但是由于它们被擦除以后，所以泛型的单例就足够了。 以下是它的实例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">// Generic singleton factory pattern</span><br><span class="line"></span><br><span class="line">private static UnaryOperator&lt;Object&gt; IDENTITY_FN = (t) -&gt; t;</span><br><span class="line"></span><br><span class="line">@SuppressWarnings(&quot;unchecked&quot;)</span><br><span class="line"></span><br><span class="line">public static &lt;T&gt; UnaryOperator&lt;T&gt; identityFunction() &#123;</span><br><span class="line"></span><br><span class="line">    return (UnaryOperator&lt;T&gt;) IDENTITY_FN;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将<code>IDENTITY_FN</code>转换为<code>(UnaryFunction &lt;T&gt;)</code>会生成一个未经检查的强制转换警告，因为<code>UnaryOperator &lt;Object&gt;</code>对于每个<code>T</code>都不是一个<code>UnaryOperator &lt;T&gt;</code>。但是恒等方法是特殊的：它返回未修改的参数，所以我们知道，使用它作为一个<code>UnaryFunction &lt;T&gt;</code>是类型安全的，无论<code>T</code>的值是多少。因此，我们可以放心地抑制由这个强制生成的未经检查的强制转换警告。 一旦我们完成了这些，代码编译没有错误或警告。</p>
+<p>下面是一个示例程序，它使用我们的泛型单例作为<code>UnaryOperator &lt;String&gt;</code>和<code>UnaryOperator &lt;Number&gt;</code>。 像往常一样，它不包含强制转化，编译时也没有错误和警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">// Sample program to exercise generic singleton</span><br><span class="line"></span><br><span class="line">public static void main(String[] args) &#123;</span><br><span class="line"></span><br><span class="line">    String[] strings = &#123; &quot;jute&quot;, &quot;hemp&quot;, &quot;nylon&quot; &#125;;</span><br><span class="line"></span><br><span class="line">    UnaryOperator&lt;String&gt; sameString = identityFunction();</span><br><span class="line"></span><br><span class="line">    for (String s : strings)</span><br><span class="line"></span><br><span class="line">        System.out.println(sameString.apply(s));</span><br><span class="line"></span><br><span class="line">    Number[] numbers = &#123; 1, 2.0, 3L &#125;;</span><br><span class="line"></span><br><span class="line">    UnaryOperator&lt;Number&gt; sameNumber = identityFunction();</span><br><span class="line"></span><br><span class="line">    for (Number n : numbers)</span><br><span class="line"></span><br><span class="line">        System.out.println(sameNumber.apply(n));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然相对较少，类型参数受涉及该类型参数本身的某种表达式限制是允许的。 这就是所谓的递归类型限制（recursive type bound）。 递归类型限制的常见用法与<code>Comparable</code>接口有关，它定义了一个类型的自然顺序（条目 14）。 这个接口如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public interface Comparable&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">    int compareTo(T o);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>类型参数<code>T</code>定义了实现<code>Comparable &lt;T&gt;</code>的类型的元素可以比较的类型。 在实际中，几乎所有类型都只能与自己类型的元素进行比较。 所以，例如，<code>String</code>类实现了<code>Comparable &lt;String&gt;</code>，<code>Integer</code>类实现了<code>Comparable &lt;Integer&gt;</code>等等。</p>
+<p>许多方法采用实现<code>Comparable</code>的元素的集合来对其进行排序，在其中进行搜索，计算其最小值或最大值等。 要做到这一点，要求集合中的每一个元素都可以与其中的每一个元素相比，换言之，这个元素是可以相互比较的。 以下是如何表达这一约束：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// Using a recursive type bound to express mutual comparability</span><br><span class="line"></span><br><span class="line">public static &lt;E extends Comparable&lt;E&gt;&gt; E max(Collection&lt;E&gt; c);</span><br></pre></td></tr></table></figure>
+<p>限定的类型<code>&lt;E extends Comparable &lt;E &gt;&gt;</code>可以理解为“任何可以与自己比较的类型<code>E</code>”，这或多或少精确地对应于相互可比性的概念。</p>
+<p>这里有一个与前面的声明相匹配的方法。它根据其元素的自然顺序来计算集合中的最大值，并编译没有错误或警告：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// Returns max value in a collection - uses recursive type bound</span><br><span class="line"></span><br><span class="line">public static &lt;E extends Comparable&lt;E&gt;&gt; E max(Collection&lt;E&gt; c) &#123;</span><br><span class="line"></span><br><span class="line">    if (c.isEmpty())</span><br><span class="line"></span><br><span class="line">        throw new IllegalArgumentException(&quot;Empty collection&quot;);</span><br><span class="line"></span><br><span class="line">    E result = null;</span><br><span class="line"></span><br><span class="line">    for (E e : c)</span><br><span class="line"></span><br><span class="line">        if (result == null || [e.compareTo(result](http://e.compareTo(result)) &gt; 0)</span><br><span class="line"></span><br><span class="line">            result = Objects.requireNonNull(e);</span><br><span class="line"></span><br><span class="line">    return result;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请注意，如果列表为空，则此方法将引发<code>IllegalArgumentException</code>异常。 更好的选择是返回一个<code>Optional&lt;E&gt;</code>（条目 55）。</p>
+<p>递归类型限制可能变得复杂得多，但幸运的是他们很少这样做。 如果你理解了这个习惯用法，它的通配符变体（条目 31）和模拟的自我类型用法（条目 2），你将能够处理在实践中遇到的大多数递归类型限制。</p>
+<p>总之，像泛型类型一样，泛型方法比需要客户端对输入参数和返回值进行显式强制转换的方法更安全，更易于使用。 像类型一样，你应该确保你的方法可以不用强制转换，这通常意味着它们是泛型的。 应该泛型化现有的方法，其使用需要强制转换。 这使得新用户的使用更容易，而不会破坏现有的客户端（条目 26）。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <ul class="article-meta">
+        <li>
+          <span class="label">Published Date:</span>
+          <a href="/2018/05/09/effective-java-cn-26-30/" class="article-date">
+  <time datetime="2018-05-09T01:25:48.000Z" itemprop="datePublished">2018-05-09</time>
+</a>
+
+        </li>
+        
+          <li>
+            <span class="label">Category:</span>
+            
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+
+          </li>
+        
+        
+        <hr/>
+      </ul>
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav" class="article-nav">
+  
+    <a href="/2018/05/09/effective-java-cn-31-35/" id="article-nav-newer" class="article-nav-link-wrap newer">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Effective Java 中文版(item:31-35)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/09/effective-java-cn-21-25/" id="article-nav-older" class="article-nav-link-wrap older">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Effective Java 中文版(item:21-25)</div>
+    </a>
+  
+</nav>
+
+
+  
+</article>
+
+
+
+
+
+
+
+
+      </div>
+      
+    <footer id="footer" class="post-footer footer">
+      
+      <hr/>
+      <div id="footerContent" class="footer-content">
+        <p>如需联系,可以前往我的<a href="https://github.com/yuanwai">Github</a>留言,或者电邮:<a href="mailto:lxdhzzj@gmial.com">lxdhzzj@gmial.com</a></p>
+
+
+      </div>
+    </footer>
+
+      
+
+
+
+
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/typing.js"></script>
+<!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+
+
+
+
+
+
+
+    </div>
+  </body>
+</html>
